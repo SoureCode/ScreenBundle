@@ -104,6 +104,9 @@ class SoureCodeScreenBundle extends AbstractBundle
                 tagged_iterator('soure_code.screen.provider'),
             ]);
 
+        $services->alias(ScreenProviderInterface::class, $prefix . 'provider.chain')
+            ->public();
+
         $services->set($prefix . 'manager', ScreenManager::class)
             ->args([
                 param('kernel.project_dir'),

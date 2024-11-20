@@ -1,0 +1,35 @@
+{
+    "name": "sourecode/screen-bundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "SoureCode\\Bundle\\Screen\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SoureCode\\Bundle\\Screen\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "chapterjason",
+            "email": "jason@sourecode.dev"
+        }
+    ],
+    "require": {
+        "symfony/http-kernel": "^7.1",
+        "symfony/config": "^7.1",
+        "symfony/dependency-injection": "^7.1",
+        "symfony/filesystem": "^7.1",
+        "symfony/process": "^7.1"
+    },
+    "require-dev": {
+        "nyholm/symfony-bundle-test": "^3.0",
+        "phpunit/phpunit": "^9.5",
+        "symfony/phpunit-bridge": "^7.1",
+        "doctrine/doctrine-bundle": "^2.13",
+        "doctrine/orm": "^3.3"
+    }
+}

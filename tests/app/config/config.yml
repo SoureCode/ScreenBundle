@@ -1,0 +1,6 @@
+soure_code_screen:
+    screens:
+        echoTest:
+            command: ["echo", "Hello World"]
+        daemonTest:
+            command: ["sleep", "5"]

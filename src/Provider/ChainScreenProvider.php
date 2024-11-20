@@ -23,7 +23,7 @@ readonly class ChainScreenProvider implements ScreenProviderInterface
         $screens = [];
 
         foreach ($this->providers as $provider) {
-            $screens = $provider->all();
+            $screens[] = $provider->all();
         }
 
         $keys = [];

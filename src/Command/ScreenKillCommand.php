@@ -12,10 +12,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'app:screen:start',
-    description: 'Starts all or given screen sessions',
+    name: 'app:screen:kill',
+    description: 'Kills all or given screen sessions',
 )]
-class ScreenStartCommand extends Command
+class ScreenKillCommand extends Command
 {
     public function __construct(
         private readonly ScreenProviderInterface $screenProvider,
@@ -28,7 +28,7 @@ class ScreenStartCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('names', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Names of screen sessions to start');
+            ->addArgument('names', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Names of screen sessions to kill');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -45,10 +45,10 @@ class ScreenStartCommand extends Command
             }
         } else {
             foreach ($this->screenProvider->all() as $screen) {
-                if ($this->screenManager->start($screen)) {
-                    $io->success(sprintf("Screen session '%s' started", $screen->getName()));
+                if ($this->screenManager->kill($screen)) {
+                    $io->success(sprintf("Screen session '%s' killed", $screen->getName()));
                 } else {
-                    $io->error(sprintf("Failed to start screen session '%s'", $screen->getName()));
+                    $io->error(sprintf("Failed to kill screen session '%s'", $screen->getName()));
                 }
             }
 
@@ -56,10 +56,10 @@ class ScreenStartCommand extends Command
         }
 
         foreach ($names as $name) {
-            if ($this->screenManager->start($name)) {
-                $io->success(sprintf("Screen session '%s' started", $name));
+            if ($this->screenManager->kill($name)) {
+                $io->success(sprintf("Screen session '%s' killed", $name));
             } else {
-                $io->error(sprintf("Failed to start screen session '%s'", $name));
+                $io->error(sprintf("Failed to kill screen session '%s'", $name));
             }
         }
 

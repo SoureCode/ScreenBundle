@@ -3,6 +3,12 @@
 namespace SoureCode\Bundle\Screen;
 
 use Doctrine\ORM\EntityManagerInterface;
+use SoureCode\Bundle\Screen\Command\ScreenAttachCommand;
+use SoureCode\Bundle\Screen\Command\ScreenKillCommand;
+use SoureCode\Bundle\Screen\Command\ScreenLogCommand;
+use SoureCode\Bundle\Screen\Command\ScreenStartCommand;
+use SoureCode\Bundle\Screen\Command\ScreenStatusCommand;
+use SoureCode\Bundle\Screen\Command\ScreenStopCommand;
 use SoureCode\Bundle\Screen\Factory\ScreenFactory;
 use SoureCode\Bundle\Screen\Factory\ScreenFactoryInterface;
 use SoureCode\Bundle\Screen\Manager\ScreenManager;
@@ -107,6 +113,60 @@ class SoureCodeScreenBundle extends AbstractBundle
 
         $services->alias(ScreenManager::class, $prefix . 'manager')
             ->public();
+
+        $services->set($prefix . 'command.attach', ScreenAttachCommand::class)
+            ->args([
+                service($prefix . 'provider.chain'),
+                service($prefix . 'manager'),
+            ])
+            ->tag('console.command', [
+                'command' => 'screen:attach',
+            ]);
+
+        $services->set($prefix . 'command.kill', ScreenKillCommand::class)
+            ->args([
+                service($prefix . 'provider.chain'),
+                service($prefix . 'manager'),
+            ])
+            ->tag('console.command', [
+                'command' => 'screen:kill',
+            ]);
+
+        $services->set($prefix . 'command.log', ScreenLogCommand::class)
+            ->args([
+                service($prefix . 'provider.chain'),
+                service($prefix . 'manager'),
+            ])
+            ->tag('console.command', [
+                'command' => 'screen:log',
+            ]);
+
+        $services->set($prefix . 'command.start', ScreenStartCommand::class)
+            ->args([
+                service($prefix . 'provider.chain'),
+                service($prefix . 'manager'),
+            ])
+            ->tag('console.command', [
+                'command' => 'screen:start',
+            ]);
+
+        $services->set($prefix . 'command.status', ScreenStatusCommand::class)
+            ->args([
+                service($prefix . 'provider.chain'),
+                service($prefix . 'manager'),
+            ])
+            ->tag('console.command', [
+                'command' => 'screen:status',
+            ]);
+
+        $services->set($prefix . 'command.stop', ScreenStopCommand::class)
+            ->args([
+                service($prefix . 'provider.chain'),
+                service($prefix . 'manager'),
+            ])
+            ->tag('console.command', [
+                'command' => 'screen:stop',
+            ]);
     }
 
     public function build(ContainerBuilder $container): void

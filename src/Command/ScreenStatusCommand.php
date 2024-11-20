@@ -12,10 +12,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'app:screen:start',
-    description: 'Starts all or given screen sessions',
+    name: 'app:screen:status',
+    description: 'Show status for all or given screen sessions',
 )]
-class ScreenStartCommand extends Command
+class ScreenStatusCommand extends Command
 {
     public function __construct(
         private readonly ScreenProviderInterface $screenProvider,
@@ -28,7 +28,7 @@ class ScreenStartCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('names', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Names of screen sessions to start');
+            ->addArgument('names', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Names of screen sessions');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -45,22 +45,18 @@ class ScreenStartCommand extends Command
             }
         } else {
             foreach ($this->screenProvider->all() as $screen) {
-                if ($this->screenManager->start($screen)) {
-                    $io->success(sprintf("Screen session '%s' started", $screen->getName()));
-                } else {
-                    $io->error(sprintf("Failed to start screen session '%s'", $screen->getName()));
-                }
+                $isRunning = $this->screenManager->isRunning($screen);
+
+                $io->writeln(sprintf("%s: %s", $screen->getName(), $isRunning ? 'running' : 'not running'));
             }
 
             return Command::SUCCESS;
         }
 
         foreach ($names as $name) {
-            if ($this->screenManager->start($name)) {
-                $io->success(sprintf("Screen session '%s' started", $name));
-            } else {
-                $io->error(sprintf("Failed to start screen session '%s'", $name));
-            }
+            $isRunning = $this->screenManager->isRunning($name);
+
+            $io->writeln(sprintf("%s: %s", $name, $isRunning ? 'running' : 'not running'));
         }
 
         return Command::SUCCESS;

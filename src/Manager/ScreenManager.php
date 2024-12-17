@@ -37,6 +37,11 @@ readonly class ScreenManager
         return Path::join($this->getLogDirectory(), sprintf("%s.log", $screenName));
     }
 
+    private function getInfoLogFile(string $screenName): string
+    {
+        return Path::join($this->getLogDirectory(), sprintf("info-%s.log", $screenName));
+    }
+
     public function start(ScreenInterface|string $nameOrScreen): bool
     {
         if (is_string($nameOrScreen)) {
@@ -62,11 +67,13 @@ readonly class ScreenManager
         }
 
         $logFile = $this->getLogFile($screenName);
+        $infoLogFile = $this->getInfoLogFile($screenName);
 
         $phpBinary = $this->phpBinary();
         $consoleBinary = $this->consoleBinary();
 
-        $this->filesystem->dumpFile($logFile, implode(PHP_EOL, [
+        $this->filesystem->dumpFile($logFile, '');
+        $this->filesystem->dumpFile($infoLogFile, implode(PHP_EOL, [
             sprintf('Screen: %s', $screen->getName()),
             sprintf('Command: %s', implode(' ', $screen->getCommand())),
             sprintf('PHP: %s', $phpBinary),
@@ -94,8 +101,8 @@ readonly class ScreenManager
             5
         );
 
-        $process->run(function ($type, $buffer) use ($logFile) {
-            $this->filesystem->appendToFile($logFile, $buffer);
+        $process->run(function ($type, $buffer) use ($infoLogFile) {
+            $this->filesystem->appendToFile($infoLogFile, $buffer);
         });
 
         return $process->isSuccessful();

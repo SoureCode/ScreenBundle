@@ -3,17 +3,13 @@
 namespace SoureCode\Bundle\Screen\Tests\Provider;
 
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use Doctrine\ORM\EntityManagerInterface;
 use Nyholm\BundleTest\TestKernel;
-use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
 use SoureCode\Bundle\Screen\SoureCodeScreenBundle;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class DoctrineScreenProviderWithoutConfigTest extends KernelTestCase
 {
-    private ?ScreenProviderInterface $provider = null;
-
     protected static function getKernelClass(): string
     {
         return TestKernel::class;
@@ -27,46 +23,19 @@ class DoctrineScreenProviderWithoutConfigTest extends KernelTestCase
         $kernel->addTestBundle(DoctrineBundle::class);
         $kernel->addTestBundle(SoureCodeScreenBundle::class);
         $kernel->addTestConfig(__DIR__ . '/../app/config/config.yml');
-        $kernel->addTestConfig(__DIR__ . '/../app/config/doctrine_empty.yml');
+        $kernel->addTestConfig(__DIR__ . '/../app/config/doctrine.yml');
+        $kernel->addTestConfig(__DIR__ . '/../app/config/disable.yml');
         $kernel->handleOptions($options);
 
         return $kernel;
     }
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $container = self::getContainer();
-
-        $this->entityManager = $container->get(EntityManagerInterface::class);
-        $this->provider = $container->get('soure_code.screen.provider.doctrine');
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        $this->entityManager->getConnection()->close();
-        $this->entityManager->clear();
-        $this->entityManager->close();
-        $this->entityManager = null;
-    }
-
     public function test(): void
     {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Mapping not configured.');
-
-        // Act
-        $exists = $this->provider->has('testABC');
-        $all = $this->provider->all();
+        $container = self::getContainer();
 
         // Assert
-        $this->assertFalse($exists, 'The provider should not be able to check if a screen exists.');
-        $this->assertEmpty($all, 'The provider should not return any screens.');
-
-        // Act
-        $this->provider->get('testCBA');
+        $this->assertFalse($container->has('soure_code.screen.provider.doctrine'), 'The provider should not be registered.');
+        $this->assertTrue($container->has('doctrine'), 'The doctrine should be registered.');
     }
 }

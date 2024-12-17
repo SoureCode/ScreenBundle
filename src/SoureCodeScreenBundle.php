@@ -30,12 +30,21 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_it
 
 class SoureCodeScreenBundle extends AbstractBundle
 {
+    private static string $PREFIX = 'soure_code.screen.';
+
     public function configure(DefinitionConfigurator $definition): void
     {
         // @formatter:off
         $definition->rootNode()
             ->fixXmlConfig('screen')
             ->children()
+                ->scalarNode('doctrine')
+                    ->defaultValue(false)
+                    ->validate()
+                        ->ifTrue(fn ($v) => !is_bool($v))
+                        ->thenInvalid('The doctrine option must be a boolean.')
+                    ->end()
+                ->end()
                 ->scalarNode('class')
                     ->defaultValue(Screen::class)
                     ->validate()
@@ -71,21 +80,21 @@ class SoureCodeScreenBundle extends AbstractBundle
             ->addTag('soure_code.screen.provider');
 
         $services = $container->services();
-        $prefix = 'soure_code.screen.';
+        $parameters = $container->parameters();
 
-        $services->set($prefix . 'factory', ScreenFactory::class)
+        $bundles = $builder->getParameter('kernel.bundles');
+        $doctrineEnabled = $config['doctrine'] && array_key_exists('DoctrineBundle', $bundles);
+
+        $services->set(self::$PREFIX . 'factory', ScreenFactory::class)
             ->args([
                 $config['class'],
             ]);
 
-        $services->alias(ScreenFactoryInterface::class, $prefix . 'factory')
+        $services->alias(ScreenFactoryInterface::class, self::$PREFIX . 'factory')
             ->public();
 
-        $bundles = $builder->getParameter('kernel.bundles');
-
-        if (array_key_exists('DoctrineBundle', $bundles))
-        {
-            $services->set($prefix . 'provider.doctrine', DoctrineScreenProvider::class)
+        if ($doctrineEnabled) {
+            $services->set(self::$PREFIX . 'provider.doctrine', DoctrineScreenProvider::class)
                 ->args([
                     $config['class'],
                     service(EntityManagerInterface::class),
@@ -93,36 +102,36 @@ class SoureCodeScreenBundle extends AbstractBundle
                 ->tag('soure_code.screen.provider');
         }
 
-        $services->set($prefix . 'provider.config', ConfigScreenProvider::class)
+        $services->set(self::$PREFIX . 'provider.config', ConfigScreenProvider::class)
             ->args([
-                service($prefix . 'factory'),
+                service(self::$PREFIX . 'factory'),
                 $config['screens'],
             ])
             ->tag('soure_code.screen.provider');
 
-        $services->set($prefix . 'provider.chain', ChainScreenProvider::class)
+        $services->set(self::$PREFIX . 'provider.chain', ChainScreenProvider::class)
             ->args([
                 tagged_iterator('soure_code.screen.provider'),
             ]);
 
-        $services->alias(ScreenProviderInterface::class, $prefix . 'provider.chain')
+        $services->alias(ScreenProviderInterface::class, self::$PREFIX . 'provider.chain')
             ->public();
 
-        $services->set($prefix . 'manager', ScreenManager::class)
+        $services->set(self::$PREFIX . 'manager', ScreenManager::class)
             ->args([
                 param('kernel.project_dir'),
                 param('kernel.environment'),
                 param('kernel.debug'),
                 service(Filesystem::class),
-                service($prefix . 'provider.chain'),
+                service(self::$PREFIX . 'provider.chain'),
             ]);
 
-        $services->alias(ScreenManager::class, $prefix . 'manager')
+        $services->alias(ScreenManager::class, self::$PREFIX . 'manager')
             ->public();
 
-        $services->set($prefix . 'command.run', ScreenRunCommand::class)
+        $services->set(self::$PREFIX . 'command.run', ScreenRunCommand::class)
             ->args([
-                service($prefix . 'provider.chain'),
+                service(self::$PREFIX . 'provider.chain'),
                 service('event_dispatcher'),
             ])
             ->tag('console.command', [
@@ -130,55 +139,55 @@ class SoureCodeScreenBundle extends AbstractBundle
                 'hidden' => true,
             ]);
 
-        $services->set($prefix . 'command.attach', ScreenAttachCommand::class)
+        $services->set(self::$PREFIX . 'command.attach', ScreenAttachCommand::class)
             ->args([
-                service($prefix . 'provider.chain'),
-                service($prefix . 'manager'),
+                service(self::$PREFIX . 'provider.chain'),
+                service(self::$PREFIX . 'manager'),
             ])
             ->tag('console.command', [
                 'command' => 'screen:attach',
             ]);
 
-        $services->set($prefix . 'command.kill', ScreenKillCommand::class)
+        $services->set(self::$PREFIX . 'command.kill', ScreenKillCommand::class)
             ->args([
-                service($prefix . 'provider.chain'),
-                service($prefix . 'manager'),
+                service(self::$PREFIX . 'provider.chain'),
+                service(self::$PREFIX . 'manager'),
             ])
             ->tag('console.command', [
                 'command' => 'screen:kill',
             ]);
 
-        $services->set($prefix . 'command.log', ScreenLogCommand::class)
+        $services->set(self::$PREFIX . 'command.log', ScreenLogCommand::class)
             ->args([
-                service($prefix . 'provider.chain'),
-                service($prefix . 'manager'),
+                service(self::$PREFIX . 'provider.chain'),
+                service(self::$PREFIX . 'manager'),
             ])
             ->tag('console.command', [
                 'command' => 'screen:log',
             ]);
 
-        $services->set($prefix . 'command.start', ScreenStartCommand::class)
+        $services->set(self::$PREFIX . 'command.start', ScreenStartCommand::class)
             ->args([
-                service($prefix . 'provider.chain'),
-                service($prefix . 'manager'),
+                service(self::$PREFIX . 'provider.chain'),
+                service(self::$PREFIX . 'manager'),
             ])
             ->tag('console.command', [
                 'command' => 'screen:start',
             ]);
 
-        $services->set($prefix . 'command.status', ScreenStatusCommand::class)
+        $services->set(self::$PREFIX . 'command.status', ScreenStatusCommand::class)
             ->args([
-                service($prefix . 'provider.chain'),
-                service($prefix . 'manager'),
+                service(self::$PREFIX . 'provider.chain'),
+                service(self::$PREFIX . 'manager'),
             ])
             ->tag('console.command', [
                 'command' => 'screen:status',
             ]);
 
-        $services->set($prefix . 'command.stop', ScreenStopCommand::class)
+        $services->set(self::$PREFIX . 'command.stop', ScreenStopCommand::class)
             ->args([
-                service($prefix . 'provider.chain'),
-                service($prefix . 'manager'),
+                service(self::$PREFIX . 'provider.chain'),
+                service(self::$PREFIX . 'manager'),
             ])
             ->tag('console.command', [
                 'command' => 'screen:stop',
@@ -197,4 +206,29 @@ class SoureCodeScreenBundle extends AbstractBundle
 
         parent::build($container);
     }
+
+    public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
+    {
+        $bundles = $builder->getParameter('kernel.bundles');
+        $doctrineEnabled = array_key_exists('DoctrineBundle', $bundles);
+
+        if ($doctrineEnabled) {
+            $container->extension('doctrine', [
+                'orm' => [
+                    'mappings' => [
+                        'SoureCodeScreenBundle' => [
+                            'is_bundle' => true,
+                            'type' => 'xml',
+                            'dir' => 'config/doctrine',
+                            'prefix' => 'SoureCode\Bundle\Screen\Entity',
+                            'alias' => 'SoureCodeScreen',
+                        ],
+                    ],
+                ],
+            ]);
+        }
+
+        parent::prependExtension($container, $builder); // TODO: Change the autogenerated stub
+    }
 }
+

@@ -30,8 +30,11 @@ class ScreenRunCommand extends Command implements SignalableCommandInterface
     private null|ScreenInterface $screen = null;
 
     public function __construct(
-        private readonly ScreenProviderInterface $screenProvider,
+        private readonly ScreenProviderInterface  $screenProvider,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly string                   $baseDirectory,
+        private readonly string                   $environment,
+        private readonly bool                     $debug,
     )
     {
         parent::__construct();
@@ -40,13 +43,12 @@ class ScreenRunCommand extends Command implements SignalableCommandInterface
     protected function configure(): void
     {
         $this
-            ->addArgument('screenName', InputArgument::REQUIRED, 'The screen name.')
-        ;
+            ->addArgument('screenName', InputArgument::REQUIRED, 'The screen name.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if(!$output instanceof ConsoleOutputInterface){
+        if (!$output instanceof ConsoleOutputInterface) {
             throw new \InvalidArgumentException('Output must be an instance of ConsoleOutputInterface.');
         }
 
@@ -62,7 +64,16 @@ class ScreenRunCommand extends Command implements SignalableCommandInterface
 
         $command = $this->resolveCommand($this->screen);
 
-        $this->process = new Process($command, null, null, null, null);
+        $this->process = new Process(
+            $command,
+            $this->baseDirectory,
+            [
+                'APP_ENV' => $this->environment,
+                'APP_DEBUG' => $this->debug,
+            ],
+            null,
+            null
+        );
 
         try {
             $this->process->start(function ($type, $buffer) use ($errorOutput, $output) {

@@ -7,7 +7,6 @@ use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\PhpExecutableFinder;
-use Symfony\Component\Process\PhpProcess;
 use Symfony\Component\Process\Process;
 
 readonly class ScreenManager

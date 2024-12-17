@@ -133,6 +133,9 @@ class SoureCodeScreenBundle extends AbstractBundle
             ->args([
                 service(self::$PREFIX . 'provider.chain'),
                 service('event_dispatcher'),
+                param('kernel.project_dir'),
+                param('kernel.environment'),
+                param('kernel.debug'),
             ])
             ->tag('console.command', [
                 'command' => 'screen:run',

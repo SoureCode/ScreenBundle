@@ -63,7 +63,16 @@ readonly class ScreenManager
 
         $logFile = $this->getLogFile($screenName);
 
-        $this->filesystem->dumpFile($logFile, '');
+        $phpBinary = $this->phpBinary();
+        $consoleBinary = $this->consoleBinary();
+
+        $this->filesystem->dumpFile($logFile, implode(PHP_EOL, [
+            sprintf('Screen: %s', $screen->getName()),
+            sprintf('Command: %s', implode(' ', $screen->getCommand())),
+            sprintf('PHP: %s', $phpBinary),
+            sprintf('Console: %s', $consoleBinary),
+            '',
+        ]));
 
         $process = new Process([
             'screen',
@@ -72,8 +81,8 @@ readonly class ScreenManager
             $logFile,
             '-S',
             $screenName,
-            $this->phpBinary(),
-            $this->consoleBinary(),
+            $phpBinary,
+            $consoleBinary,
             'screen:run',
             $screen->getName(),
         ], $this->baseDirectory,
@@ -85,7 +94,9 @@ readonly class ScreenManager
             5
         );
 
-        $process->run();
+        $process->run(function ($type, $buffer) use ($logFile) {
+            $this->filesystem->appendToFile($logFile, $buffer);
+        });
 
         return $process->isSuccessful();
     }

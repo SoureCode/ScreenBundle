@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'app:screen:stop',
+    name: 'screen:stop',
     description: 'Stops all or given screen sessions',
 )]
 class ScreenStopCommand extends Command

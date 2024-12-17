@@ -7,10 +7,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\SchemaTool;
 use Nyholm\BundleTest\TestKernel;
-use SoureCode\Bundle\Screen\Model\Screen;
+use SoureCode\Bundle\Screen\Entity\Screen;
 use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
 use SoureCode\Bundle\Screen\SoureCodeScreenBundle;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class DoctrineScreenProviderTest extends KernelTestCase
@@ -28,6 +30,7 @@ class DoctrineScreenProviderTest extends KernelTestCase
     {
         /** @var TestKernel $kernel */
         $kernel = parent::createKernel($options);
+        $kernel->setTestProjectDir(__DIR__ . '/../app');
         $kernel->addTestBundle(DoctrineBundle::class);
         $kernel->addTestBundle(SoureCodeScreenBundle::class);
         $kernel->addTestConfig(__DIR__ . '/../app/config/config.yml');
@@ -42,6 +45,12 @@ class DoctrineScreenProviderTest extends KernelTestCase
         parent::setUp();
 
         $container = self::getContainer();
+
+        /**
+         * @var Filesystem $filesystem
+         */
+        $filesystem = $container->get('filesystem');
+        $filesystem->mkdir(Path::join(__DIR__, '..', 'app', 'var'));
 
         $this->entityManager = $container->get(EntityManagerInterface::class);
         $this->provider = $container->get('soure_code.screen.provider.doctrine');

@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'app:screen:kill',
+    name: 'screen:kill',
     description: 'Kills all or given screen sessions',
 )]
 class ScreenKillCommand extends Command

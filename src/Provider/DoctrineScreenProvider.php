@@ -3,7 +3,8 @@
 namespace SoureCode\Bundle\Screen\Provider;
 
 use Doctrine\ORM\EntityManagerInterface;
-use SoureCode\Bundle\Screen\Model\ScreenInterface;
+use Doctrine\Persistence\Mapping\MappingException;
+use SoureCode\Bundle\Screen\Entity\ScreenInterface;
 
 readonly class DoctrineScreenProvider implements ScreenProviderInterface
 {
@@ -14,7 +15,17 @@ readonly class DoctrineScreenProvider implements ScreenProviderInterface
         private EntityManagerInterface $entityManager,
     )
     {
-        $this->mappingConfigured = $this->entityManager->getMetadataFactory()->hasMetadataFor($this->className);
+        try {
+            $metadataFactory = $this->entityManager->getMetadataFactory();
+
+            $this->mappingConfigured = $metadataFactory->getMetadataFor($this->className) !== null;
+        } catch (MappingException $exception) {
+            if (str_contains($exception->getMessage(), $this->className)) {
+                $this->mappingConfigured = false;
+            } else {
+                throw $exception;
+            }
+        }
     }
 
     /**

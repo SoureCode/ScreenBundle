@@ -3,7 +3,7 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                           https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="SoureCode\Bundle\Screen\Model\Screen" table="soure_code_screens">
+  <entity name="SoureCode\Bundle\Screen\Entity\Screen" table="soure_code_screens">
     <id name="name" type="string" column="name"/>
     <field name="command" type="json" column="command" nullable="false"/>
   </entity>

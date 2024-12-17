@@ -4,10 +4,7 @@ namespace SoureCode\Bundle\Screen\Tests\Provider;
 
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Tools\SchemaTool;
 use Nyholm\BundleTest\TestKernel;
-use SoureCode\Bundle\Screen\Model\Screen;
 use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
 use SoureCode\Bundle\Screen\SoureCodeScreenBundle;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -26,6 +23,7 @@ class DoctrineScreenProviderWithoutConfigTest extends KernelTestCase
     {
         /** @var TestKernel $kernel */
         $kernel = parent::createKernel($options);
+        $kernel->setTestProjectDir(__DIR__ . '/../app');
         $kernel->addTestBundle(DoctrineBundle::class);
         $kernel->addTestBundle(SoureCodeScreenBundle::class);
         $kernel->addTestConfig(__DIR__ . '/../app/config/config.yml');

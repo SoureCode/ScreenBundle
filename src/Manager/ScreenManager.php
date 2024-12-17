@@ -2,17 +2,20 @@
 
 namespace SoureCode\Bundle\Screen\Manager;
 
-use SoureCode\Bundle\Screen\Model\ScreenInterface;
+use SoureCode\Bundle\Screen\Entity\ScreenInterface;
 use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\PhpExecutableFinder;
+use Symfony\Component\Process\PhpProcess;
 use Symfony\Component\Process\Process;
 
 readonly class ScreenManager
 {
     public function __construct(
         private string                  $baseDirectory,
+        private string                  $environment,
+        private bool                    $debug,
         private Filesystem              $filesystem,
         private ScreenProviderInterface $provider,
     )
@@ -62,8 +65,6 @@ readonly class ScreenManager
 
         $this->filesystem->dumpFile($logFile, '');
 
-        $command = $this->resolveCommand($screen);
-
         $process = new Process([
             'screen',
             '-dmL',
@@ -71,10 +72,18 @@ readonly class ScreenManager
             $logFile,
             '-S',
             $screenName,
-            'bash',
-            '-c',
-            implode(' ', array_map('escapeshellarg', $command))
-        ], $this->baseDirectory, null, null, 5);
+            $this->phpBinary(),
+            $this->consoleBinary(),
+            'screen:run',
+            $screen->getName(),
+        ], $this->baseDirectory,
+            [
+                'APP_ENV' => $this->environment,
+                'APP_DEBUG' => $this->debug,
+            ],
+            null,
+            5
+        );
 
         $process->run();
 
@@ -99,7 +108,8 @@ readonly class ScreenManager
 
         $screenName = self::generateScreenName($screen);
 
-        $process = new Process(['screen', '-S', $screenName, '-X', 'quit']);
+        // Attempt a graceful quit by sending ctrl+c
+        $process = new Process(['screen', '-S', $screenName, '-X', 'stuff', "\003"]);
 
         $process->run();
 
@@ -124,11 +134,19 @@ readonly class ScreenManager
 
         $screenName = self::generateScreenName($screen);
 
-        $process = new Process(['screen', '-S', $screenName, '-X', 'kill']);
+        // Attempt a graceful stop first
+        if ($this->stop($screen)) {
+            if ($this->isRunning($screen)) {
+                $killProcess = new Process(['screen', '-S', $screenName, '-X', 'kill']);
+                $killProcess->run();
 
-        $process->run();
+                return $killProcess->isSuccessful();
+            }
 
-        return $process->isSuccessful();
+            return true;
+        }
+
+        return true;
     }
 
     public function isRunning(ScreenInterface|string $nameOrScreen): bool
@@ -196,28 +214,20 @@ readonly class ScreenManager
         $process->run();
     }
 
-    /**
-     * @return string[]
-     */
-    private function resolveCommand(ScreenInterface $screen)
+    private function phpBinary(): string
     {
-        $command = $screen->getCommand();
+        $finder = new PhpExecutableFinder();
+        $phpBinary = $finder->find(false);
 
-        if (count($command) === 0) {
-            throw new \InvalidArgumentException('The command must be an array with at least one element.');
+        if ($phpBinary) {
+            return $phpBinary;
         }
 
-        $first = $screen->getCommand()[0];
+        throw new \RuntimeException('PHP binary not found.');
+    }
 
-        if ($first === 'php') {
-            $finder = new PhpExecutableFinder();
-            $phpBinary = $finder->find(false);
-
-            if ($phpBinary) {
-                $command[0] = $phpBinary;
-            }
-        }
-
-        return $command;
+    private function consoleBinary(): string
+    {
+        return Path::join($this->baseDirectory, 'bin', 'console');
     }
 }

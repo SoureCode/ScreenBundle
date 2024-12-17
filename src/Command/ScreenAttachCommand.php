@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'app:screen:attach',
+    name: 'screen:attach',
     description: 'Attach given screen sessions',
 )]
 class ScreenAttachCommand extends Command

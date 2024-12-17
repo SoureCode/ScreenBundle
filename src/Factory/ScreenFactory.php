@@ -2,7 +2,7 @@
 
 namespace SoureCode\Bundle\Screen\Factory;
 
-use SoureCode\Bundle\Screen\Model\ScreenInterface;
+use SoureCode\Bundle\Screen\Entity\ScreenInterface;
 
 readonly class ScreenFactory implements ScreenFactoryInterface
 {

@@ -22,6 +22,7 @@ class BundleInitializationTest extends KernelTestCase
          * @var TestKernel $kernel
          */
         $kernel = parent::createKernel($options);
+        $kernel->setTestProjectDir(__DIR__ . '/app');
         $kernel->addTestBundle(SoureCodeScreenBundle::class);
         $kernel->addTestConfig(__DIR__ . '/app/config/config.yml');
         $kernel->handleOptions($options);

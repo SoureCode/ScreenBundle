@@ -2,11 +2,17 @@
 
 namespace SoureCode\Bundle\Screen\Tests\Manager;
 
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Nyholm\BundleTest\TestKernel;
 use RuntimeException;
 use SoureCode\Bundle\Screen\Manager\ScreenManager;
+use SoureCode\Bundle\Screen\Entity\Screen;
 use SoureCode\Bundle\Screen\SoureCodeScreenBundle;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class ScreenManagerTest extends KernelTestCase
@@ -23,8 +29,11 @@ class ScreenManagerTest extends KernelTestCase
     {
         /** @var TestKernel $kernel */
         $kernel = parent::createKernel($options);
+        $kernel->setTestProjectDir(__DIR__ . '/../app');
         $kernel->addTestBundle(SoureCodeScreenBundle::class);
+        $kernel->addTestBundle(DoctrineBundle::class);
         $kernel->addTestConfig(__DIR__ . '/../app/config/config.yml');
+        $kernel->addTestConfig(__DIR__ . '/../app/config/doctrine.yml');
         $kernel->handleOptions($options);
 
         return $kernel;
@@ -46,6 +55,48 @@ class ScreenManagerTest extends KernelTestCase
             }
             usleep(self::SLEEP_MICROSECONDS);
         }
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $container = self::getContainer();
+
+        /**
+         * @var Filesystem $filesystem
+         */
+        $filesystem = $container->get('filesystem');
+        $filesystem->mkdir(Path::join(__DIR__, '..', 'app', 'var'));
+
+        $this->entityManager = $container->get(EntityManagerInterface::class);
+        $this->provider = $container->get('soure_code.screen.provider.doctrine');
+        $this->repository = $this->entityManager->getRepository(Screen::class);
+
+        $schemaTool = new SchemaTool($this->entityManager);
+        $schemaTool->updateSchema([
+            $this->entityManager->getClassMetadata(Screen::class),
+        ]);
+
+        $this->repository->createQueryBuilder('screen')
+            ->delete()
+            ->getQuery()
+            ->execute();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $schemaTool = new SchemaTool($this->entityManager);
+        $schemaTool->dropDatabase();
+
+        $this->entityManager->getConnection()->close();
+        $this->entityManager->clear();
+        $this->entityManager->close();
+
+        $this->repository = null;
+        $this->entityManager = null;
     }
 
     public function testStartAndLogs(): void

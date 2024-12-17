@@ -12,6 +12,6 @@ doctrine:
             SoureCodeScreenBundle:
                 is_bundle: true
                 type: xml
-                dir: 'src/Resources/config/doctrine'
-                prefix: 'SoureCode\Bundle\Screen\Model'
+                dir: 'Resources/config/doctrine'
+                prefix: 'SoureCode\Bundle\Screen\Entity'
                 alias: SoureCodeScreen

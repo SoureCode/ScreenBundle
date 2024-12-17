@@ -1,6 +1,6 @@
 <?php
 
-namespace SoureCode\Bundle\Screen\Model;
+namespace SoureCode\Bundle\Screen\Entity;
 
 class Screen implements ScreenInterface
 {

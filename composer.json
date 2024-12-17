@@ -19,6 +19,7 @@
         }
     ],
     "require": {
+        "ext-pcntl": "*",
         "symfony/http-kernel": "^7.1",
         "symfony/config": "^7.1",
         "symfony/dependency-injection": "^7.1",
@@ -31,6 +32,12 @@
         "phpunit/phpunit": "^9.5",
         "symfony/phpunit-bridge": "^7.1",
         "doctrine/doctrine-bundle": "^2.13",
-        "doctrine/orm": "^3.3"
+        "doctrine/orm": "^3.3",
+        "symfony/runtime": "^7.2"
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/runtime": true
+        }
     }
 }

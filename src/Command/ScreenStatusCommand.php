@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'app:screen:status',
+    name: 'screen:status',
     description: 'Show status for all or given screen sessions',
 )]
 class ScreenStatusCommand extends Command

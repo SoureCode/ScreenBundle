@@ -6,14 +6,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use SoureCode\Bundle\Screen\Command\ScreenAttachCommand;
 use SoureCode\Bundle\Screen\Command\ScreenKillCommand;
 use SoureCode\Bundle\Screen\Command\ScreenLogCommand;
+use SoureCode\Bundle\Screen\Command\ScreenRunCommand;
 use SoureCode\Bundle\Screen\Command\ScreenStartCommand;
 use SoureCode\Bundle\Screen\Command\ScreenStatusCommand;
 use SoureCode\Bundle\Screen\Command\ScreenStopCommand;
 use SoureCode\Bundle\Screen\Factory\ScreenFactory;
 use SoureCode\Bundle\Screen\Factory\ScreenFactoryInterface;
 use SoureCode\Bundle\Screen\Manager\ScreenManager;
-use SoureCode\Bundle\Screen\Model\Screen;
-use SoureCode\Bundle\Screen\Model\ScreenInterface;
+use SoureCode\Bundle\Screen\Entity\Screen;
+use SoureCode\Bundle\Screen\Entity\ScreenInterface;
 use SoureCode\Bundle\Screen\Provider\ChainScreenProvider;
 use SoureCode\Bundle\Screen\Provider\ConfigScreenProvider;
 use SoureCode\Bundle\Screen\Provider\DoctrineScreenProvider;
@@ -110,12 +111,24 @@ class SoureCodeScreenBundle extends AbstractBundle
         $services->set($prefix . 'manager', ScreenManager::class)
             ->args([
                 param('kernel.project_dir'),
+                param('kernel.environment'),
+                param('kernel.debug'),
                 service(Filesystem::class),
                 service($prefix . 'provider.chain'),
             ]);
 
         $services->alias(ScreenManager::class, $prefix . 'manager')
             ->public();
+
+        $services->set($prefix . 'command.run', ScreenRunCommand::class)
+            ->args([
+                service($prefix . 'provider.chain'),
+                service('event_dispatcher'),
+            ])
+            ->tag('console.command', [
+                'command' => 'screen:run',
+                'hidden' => true,
+            ]);
 
         $services->set($prefix . 'command.attach', ScreenAttachCommand::class)
             ->args([

@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'app:screen:log',
+    name: 'screen:log',
     description: 'View all or given screen sessions',
 )]
 class ScreenLogCommand extends Command

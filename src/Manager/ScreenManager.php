@@ -71,6 +71,7 @@ readonly class ScreenManager
 
         $phpBinary = $this->phpBinary();
         $consoleBinary = $this->consoleBinary();
+        $user = get_current_user();
 
         $this->filesystem->dumpFile($logFile, '');
         $this->filesystem->dumpFile($infoLogFile, implode(PHP_EOL, [
@@ -78,6 +79,7 @@ readonly class ScreenManager
             sprintf('Command: %s', implode(' ', $screen->getCommand())),
             sprintf('PHP: %s', $phpBinary),
             sprintf('Console: %s', $consoleBinary),
+            sprintf('User: %s', $user),
             '',
         ]));
 
@@ -102,6 +104,7 @@ readonly class ScreenManager
         );
 
         $process->run(function ($type, $buffer) use ($infoLogFile) {
+            echo $buffer; // @todo: remove later
             $this->filesystem->appendToFile($infoLogFile, $buffer);
         });
 

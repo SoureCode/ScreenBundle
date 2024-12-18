@@ -14,7 +14,6 @@ readonly class ScreenManager
     public function __construct(
         private string                  $baseDirectory,
         private string                  $environment,
-        private bool                    $debug,
         private Filesystem              $filesystem,
         private ScreenProviderInterface $provider,
     )
@@ -72,22 +71,23 @@ readonly class ScreenManager
         $consoleBinary = $this->consoleBinary();
         $user = get_current_user();
 
-        $this->filesystem->dumpFile($logFile, '');
+        $this->filesystem->remove($logFile, '');
         $this->filesystem->dumpFile($infoLogFile, implode(PHP_EOL, [
             sprintf('Screen: %s', $screen->getName()),
             sprintf('Command: %s', implode(' ', $screen->getCommand())),
             sprintf('PHP: %s', $phpBinary),
             sprintf('Console: %s', $consoleBinary),
             sprintf('User: %s', $user),
+            sprintf('Environment: %s', $this->environment),
             '',
         ]));
 
         $process = new Process([
             'screen',
-            '-dmL',
+            '-L',
             '-Logfile',
             $logFile,
-            '-S',
+            '-dmS',
             $screenName,
             $phpBinary,
             $consoleBinary,
@@ -96,16 +96,17 @@ readonly class ScreenManager
         ], $this->baseDirectory,
             [
                 'APP_ENV' => $this->environment,
-                'APP_DEBUG' => $this->debug,
             ],
             null,
             5
         );
 
-        $process->run(function ($type, $buffer) use ($infoLogFile) {
-            echo $buffer; // @todo: remove later
-            $this->filesystem->appendToFile($infoLogFile, $buffer);
-        });
+        $process->run();
+
+        $this->filesystem->appendToFile($infoLogFile, sprintf('CommandLine: %s', $process->getCommandLine()) . "\n");
+        $this->filesystem->appendToFile($infoLogFile, sprintf('Output: %s', $process->getOutput()) . "\n");
+        $this->filesystem->appendToFile($infoLogFile, sprintf('ErrorOutput: %s', $process->getErrorOutput()) . "\n");
+        $this->filesystem->appendToFile($infoLogFile, sprintf('ExitCode: %s', $process->getExitCode()) . "\n");
 
         return $process->isSuccessful();
     }

@@ -34,7 +34,6 @@ class ScreenRunCommand extends Command implements SignalableCommandInterface
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly string                   $baseDirectory,
         private readonly string                   $environment,
-        private readonly bool                     $debug,
     )
     {
         parent::__construct();
@@ -69,7 +68,6 @@ class ScreenRunCommand extends Command implements SignalableCommandInterface
             $this->baseDirectory,
             [
                 'APP_ENV' => $this->environment,
-                'APP_DEBUG' => $this->debug,
             ],
             null,
             null

@@ -2,6 +2,7 @@
 
 namespace SoureCode\Bundle\Screen\Manager;
 
+use Psr\Log\LoggerInterface;
 use SoureCode\Bundle\Screen\Entity\ScreenInterface;
 use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -16,28 +17,24 @@ readonly class ScreenManager
         private string                  $environment,
         private Filesystem              $filesystem,
         private ScreenProviderInterface $provider,
+        private LoggerInterface         $logger,
     )
     {
     }
 
-    private static function generateScreenName(ScreenInterface $screen): string
+    public static function generateScreenName(ScreenInterface $screen): string
     {
         return hash('sha256', $screen->getName() . implode('', $screen->getCommand()));
     }
 
     private function getLogDirectory(): string
     {
-        return Path::join($this->baseDirectory, 'var', 'log');
+        return Path::join($this->getBaseDirectory(), 'var', 'log');
     }
 
     private function getLogFile(string $screenName): string
     {
-        return Path::join($this->getLogDirectory(), sprintf("%s.log", $screenName));
-    }
-
-    private function getInfoLogFile(string $screenName): string
-    {
-        return Path::join($this->getLogDirectory(), sprintf("info-%s.log", $screenName));
+        return Path::join($this->getLogDirectory(), sprintf("screen-%s.log", $screenName));
     }
 
     public function start(ScreenInterface|string $nameOrScreen): bool
@@ -65,22 +62,19 @@ readonly class ScreenManager
         }
 
         $logFile = $this->getLogFile($screenName);
-        $infoLogFile = $this->getInfoLogFile($screenName);
 
         $phpBinary = $this->phpBinary();
         $consoleBinary = $this->consoleBinary();
-        $user = get_current_user();
 
-        $this->filesystem->remove($logFile, '');
-        $this->filesystem->dumpFile($infoLogFile, implode(PHP_EOL, [
-            sprintf('Screen: %s', $screen->getName()),
-            sprintf('Command: %s', implode(' ', $screen->getCommand())),
-            sprintf('PHP: %s', $phpBinary),
-            sprintf('Console: %s', $consoleBinary),
-            sprintf('User: %s', $user),
-            sprintf('Environment: %s', $this->environment),
-            '',
-        ]));
+        $this->filesystem->remove($logFile);
+
+        $this->logger->info(sprintf('Starting screen "%s"', $screen->getName()), [
+            'screen' => $screen->getName(),
+            'command' => $screen->getCommand(),
+            'php' => $phpBinary,
+            'console' => $consoleBinary,
+            'environment' => $this->environment,
+        ]);
 
         $process = new Process([
             'screen',
@@ -93,7 +87,7 @@ readonly class ScreenManager
             $consoleBinary,
             'screen:run',
             $screen->getName(),
-        ], $this->baseDirectory,
+        ], $this->getBaseDirectory(),
             [
                 'APP_ENV' => $this->environment,
             ],
@@ -103,10 +97,16 @@ readonly class ScreenManager
 
         $process->run();
 
-        $this->filesystem->appendToFile($infoLogFile, sprintf('CommandLine: %s', $process->getCommandLine()) . "\n");
-        $this->filesystem->appendToFile($infoLogFile, sprintf('Output: %s', $process->getOutput()) . "\n");
-        $this->filesystem->appendToFile($infoLogFile, sprintf('ErrorOutput: %s', $process->getErrorOutput()) . "\n");
-        $this->filesystem->appendToFile($infoLogFile, sprintf('ExitCode: %s', $process->getExitCode()) . "\n");
+        $this->logger->info(sprintf('Screen "%s" started', $screen->getName()), [
+            'screen' => $screen->getName(),
+            'command' => $screen->getCommand(),
+            'php' => $phpBinary,
+            'console' => $consoleBinary,
+            'environment' => $this->environment,
+            'output' => $process->getOutput(),
+            'errorOutput' => $process->getErrorOutput(),
+            'exitCode' => $process->getExitCode(),
+        ]);
 
         return $process->isSuccessful();
     }
@@ -137,7 +137,52 @@ readonly class ScreenManager
         return $process->isSuccessful();
     }
 
-    public function kill(ScreenInterface|string $nameOrScreen): bool
+    /**
+     * @param int $timeout - Time to wait in seconds for the screen to kill after trying to gracefully stop it
+     * @param int $sleep - Time to sleep in microseconds between checks
+     */
+    public function gracefullyStop(ScreenInterface|string $nameOrScreen, int $timeout = 5, int $sleep = 1000): bool
+    {
+        if (is_string($nameOrScreen)) {
+            if (!$this->provider->has($nameOrScreen)) {
+                throw new \InvalidArgumentException(sprintf('Screen "%s" not found.', $nameOrScreen));
+            }
+
+            $screen = $this->provider->get($nameOrScreen);
+        } else {
+            $screen = $nameOrScreen;
+        }
+
+        if (!$this->isRunning($screen)) {
+            return true;
+        }
+
+        // Attempt a graceful stop first
+        if ($this->stop($screen)) {
+            $start = time();
+
+            // Wait for the screen to stop
+            while ($this->isRunning($screen)) {
+                if (time() - $start > $timeout) {
+                    break;
+                }
+
+                usleep($sleep);
+            }
+
+            return $this->kill($screen);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param ScreenInterface|string $nameOrScreen
+     * @param int $timeout - Time to wait in seconds for the screen to kill after trying to gracefully stop it
+     * @param int $sleep - Time to sleep in microseconds between checks
+     * @return bool
+     */
+    public function kill(ScreenInterface|string $nameOrScreen, int $timeout = 5, int $sleep = 1000): bool
     {
         if (is_string($nameOrScreen)) {
             if (!$this->provider->has($nameOrScreen)) {
@@ -155,19 +200,10 @@ readonly class ScreenManager
 
         $screenName = self::generateScreenName($screen);
 
-        // Attempt a graceful stop first
-        if ($this->stop($screen)) {
-            if ($this->isRunning($screen)) {
-                $killProcess = new Process(['screen', '-S', $screenName, '-X', 'kill']);
-                $killProcess->run();
+        $process = new Process(['screen', '-S', $screenName, '-X', 'kill']);
+        $process->run();
 
-                return $killProcess->isSuccessful();
-            }
-
-            return true;
-        }
-
-        return true;
+        return $process->isSuccessful();
     }
 
     public function isRunning(ScreenInterface|string $nameOrScreen): bool
@@ -235,7 +271,7 @@ readonly class ScreenManager
         $process->run();
     }
 
-    private function phpBinary(): string
+    public function phpBinary(): string
     {
         $finder = new PhpExecutableFinder();
         $phpBinary = $finder->find(false);
@@ -247,8 +283,13 @@ readonly class ScreenManager
         throw new \RuntimeException('PHP binary not found.');
     }
 
-    private function consoleBinary(): string
+    public function consoleBinary(): string
     {
-        return Path::join($this->baseDirectory, 'bin', 'console');
+        return Path::join($this->getBaseDirectory(), 'bin', 'console');
+    }
+
+    public function getBaseDirectory(): string
+    {
+        return $this->baseDirectory;
     }
 }

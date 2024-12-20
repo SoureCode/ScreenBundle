@@ -10,6 +10,7 @@ use SoureCode\Bundle\Screen\Command\ScreenRunCommand;
 use SoureCode\Bundle\Screen\Command\ScreenStartCommand;
 use SoureCode\Bundle\Screen\Command\ScreenStatusCommand;
 use SoureCode\Bundle\Screen\Command\ScreenStopCommand;
+use SoureCode\Bundle\Screen\EventListener\RestartEventListener;
 use SoureCode\Bundle\Screen\Factory\ScreenFactory;
 use SoureCode\Bundle\Screen\Factory\ScreenFactoryInterface;
 use SoureCode\Bundle\Screen\Manager\ScreenManager;
@@ -64,6 +65,14 @@ class SoureCodeScreenBundle extends AbstractBundle
                                 ->validate()
                                     ->ifTrue(fn ($v) => !is_array($v) || count($v) <= 0)
                                     ->thenInvalid('The command must be an array with at least one element.')
+                                ->end()
+                            ->end()
+                            ->scalarNode('restart')
+                                ->defaultValue(false)
+                                ->info('If the screen should be restarted when it exits.')
+                                ->validate()
+                                    ->ifTrue(fn ($v) => !is_bool($v))
+                                    ->thenInvalid('The restart option must be a boolean.')
                                 ->end()
                             ->end()
                         ->end()
@@ -123,6 +132,7 @@ class SoureCodeScreenBundle extends AbstractBundle
                 param('kernel.environment'),
                 service(Filesystem::class),
                 service(self::$PREFIX . 'provider.chain'),
+                service('logger'),
             ]);
 
         $services->alias(ScreenManager::class, self::$PREFIX . 'manager')
@@ -176,6 +186,15 @@ class SoureCodeScreenBundle extends AbstractBundle
                 'command' => 'screen:start',
             ]);
 
+        $services->set(self::$PREFIX . 'command.restart', ScreenStartCommand::class)
+            ->args([
+                service(self::$PREFIX . 'provider.chain'),
+                service(self::$PREFIX . 'manager'),
+            ])
+            ->tag('console.command', [
+                'command' => 'screen:restart',
+            ]);
+
         $services->set(self::$PREFIX . 'command.status', ScreenStatusCommand::class)
             ->args([
                 service(self::$PREFIX . 'provider.chain'),
@@ -193,6 +212,12 @@ class SoureCodeScreenBundle extends AbstractBundle
             ->tag('console.command', [
                 'command' => 'screen:stop',
             ]);
+
+        $services->set(self::$PREFIX . 'event_listener.restart', RestartEventListener::class)
+            ->args([
+                service(self::$PREFIX . 'manager'),
+            ])
+            ->tag('kernel.event_subscriber');
     }
 
     public function build(ContainerBuilder $container): void

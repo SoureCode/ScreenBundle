@@ -20,6 +20,6 @@ readonly class ScreenFactory implements ScreenFactoryInterface
      */
     public function create(string $name, array $config): ScreenInterface
     {
-        return new $this->screenClassName($name, $config['command']);
+        return new $this->screenClassName($name, $config['command'], $config['restart']);
     }
 }

@@ -6,5 +6,10 @@
   <entity name="SoureCode\Bundle\Screen\Entity\Screen" table="soure_code_screens">
     <id name="name" type="string" column="name"/>
     <field name="command" type="json" column="command" nullable="false"/>
+    <field name="restartEnabled" type="boolean" column="restart" nullable="false">
+      <options>
+        <option name="default">false</option>
+      </options>
+    </field>
   </entity>
 </doctrine-mapping>

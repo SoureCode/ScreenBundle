@@ -21,7 +21,7 @@ return function (array $context) {
     $loadDoctrine = false;
 
     if (count($argv) >= 3){
-        $loadDoctrine = $argv[2] !== 'echoTest' && $argv[2] !== 'daemonTest';
+        $loadDoctrine = $argv[2] !== 'echoTest' && $argv[2] !== 'daemonTest' && $argv[2] !== 'restartTest';
     }
 
     $kernel = new TestKernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);

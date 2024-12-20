@@ -9,7 +9,8 @@ class Screen implements ScreenInterface
         /**
          * @var list<string>
          */
-        protected ?array $command = null
+        protected ?array $command = null,
+        protected bool $restartEnabled = false
     )
     {
     }
@@ -35,5 +36,15 @@ class Screen implements ScreenInterface
     public function setCommand(array $command): void
     {
         $this->command = $command;
+    }
+
+    public function isRestartEnabled(): bool
+    {
+        return $this->restartEnabled;
+    }
+
+    public function setRestartEnabled(bool $restartEnabled): void
+    {
+        $this->restartEnabled = $restartEnabled;
     }
 }

@@ -235,7 +235,6 @@ class SoureCodeScreenBundle extends AbstractBundle
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        /*
         $bundles = $builder->getParameter('kernel.bundles');
         $doctrineEnabled = array_key_exists('DoctrineBundle', $bundles);
 
@@ -243,18 +242,18 @@ class SoureCodeScreenBundle extends AbstractBundle
             $container->extension('doctrine', [
                 'orm' => [
                     'mappings' => [
-                        'SoureCodeScreenBundle' => [
+                        'SoureCodeScreenBundle' => false,
+                        /*'SoureCodeScreenBundle' => [
                             'is_bundle' => true,
                             'type' => 'xml',
                             'dir' => 'config/doctrine',
                             'prefix' => 'SoureCode\Bundle\Screen\Entity',
                             'alias' => 'SoureCodeScreen',
-                        ],
+                        ],*/
                     ],
                 ],
             ]);
         }
-        */
 
         parent::prependExtension($container, $builder);
     }

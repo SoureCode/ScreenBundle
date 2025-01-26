@@ -24,7 +24,6 @@ class EventTest extends KernelTestCase
         $kernel->setTestProjectDir(__DIR__ . '/app');
         $kernel->addTestBundle(SoureCodeScreenBundle::class);
         $kernel->addTestConfig(__DIR__ . '/app/config/config.yml');
-        $kernel->addTestConfig(__DIR__ . '/app/config/disable.yml');
         $kernel->handleOptions($options);
 
         return $kernel;

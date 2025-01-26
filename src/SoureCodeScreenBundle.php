@@ -2,7 +2,6 @@
 
 namespace SoureCode\Bundle\Screen;
 
-use Doctrine\ORM\EntityManagerInterface;
 use SoureCode\Bundle\Screen\Command\ScreenAttachCommand;
 use SoureCode\Bundle\Screen\Command\ScreenKillCommand;
 use SoureCode\Bundle\Screen\Command\ScreenLogCommand;
@@ -18,7 +17,6 @@ use SoureCode\Bundle\Screen\Entity\Screen;
 use SoureCode\Bundle\Screen\Entity\ScreenInterface;
 use SoureCode\Bundle\Screen\Provider\ChainScreenProvider;
 use SoureCode\Bundle\Screen\Provider\ConfigScreenProvider;
-use SoureCode\Bundle\Screen\Provider\DoctrineScreenProvider;
 use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -39,13 +37,6 @@ class SoureCodeScreenBundle extends AbstractBundle
         $definition->rootNode()
             ->fixXmlConfig('screen')
             ->children()
-                ->scalarNode('doctrine')
-                    ->defaultValue(false)
-                    ->validate()
-                        ->ifTrue(fn ($v) => !is_bool($v))
-                        ->thenInvalid('The doctrine option must be a boolean.')
-                    ->end()
-                ->end()
                 ->scalarNode('class')
                     ->defaultValue(Screen::class)
                     ->validate()
@@ -89,10 +80,6 @@ class SoureCodeScreenBundle extends AbstractBundle
             ->addTag('soure_code.screen.provider');
 
         $services = $container->services();
-        $parameters = $container->parameters();
-
-        $bundles = $builder->getParameter('kernel.bundles');
-        $doctrineEnabled = $config['doctrine'] && array_key_exists('DoctrineBundle', $bundles);
 
         $services->set(self::$PREFIX . 'factory', ScreenFactory::class)
             ->args([
@@ -101,15 +88,6 @@ class SoureCodeScreenBundle extends AbstractBundle
 
         $services->alias(ScreenFactoryInterface::class, self::$PREFIX . 'factory')
             ->public();
-
-        if ($doctrineEnabled) {
-            $services->set(self::$PREFIX . 'provider.doctrine', DoctrineScreenProvider::class)
-                ->args([
-                    $config['class'],
-                    service(EntityManagerInterface::class),
-                ])
-                ->tag('soure_code.screen.provider');
-        }
 
         $services->set(self::$PREFIX . 'provider.config', ConfigScreenProvider::class)
             ->args([
@@ -231,31 +209,6 @@ class SoureCodeScreenBundle extends AbstractBundle
         }
 
         parent::build($container);
-    }
-
-    public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
-    {
-        $bundles = $builder->getParameter('kernel.bundles');
-        $doctrineEnabled = array_key_exists('DoctrineBundle', $bundles);
-
-        if ($doctrineEnabled) {
-            $container->extension('doctrine', [
-                'orm' => [
-                    'mappings' => [
-                        'SoureCodeScreenBundle' => false,
-                        /*'SoureCodeScreenBundle' => [
-                            'is_bundle' => true,
-                            'type' => 'xml',
-                            'dir' => 'config/doctrine',
-                            'prefix' => 'SoureCode\Bundle\Screen\Entity',
-                            'alias' => 'SoureCodeScreen',
-                        ],*/
-                    ],
-                ],
-            ]);
-        }
-
-        parent::prependExtension($container, $builder);
     }
 }
 

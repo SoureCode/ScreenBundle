@@ -10,9 +10,4 @@ interface ScreenInterface
      * @return list<string>
      */
     public function getCommand(): array;
-
-    /**
-     * If the screen should be restarted on failure.
-     */
-    public function isRestartEnabled(): bool;
 }

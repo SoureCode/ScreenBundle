@@ -45,7 +45,7 @@ class ScreenStopCommand extends Command
             }
         } else {
             foreach ($this->screenProvider->all() as $screen) {
-                if ($this->screenManager->stop($screen)) {
+                if ($this->screenManager->gracefullyStop($screen)) {
                     $io->success(sprintf("Screen session '%s' stopped", $screen->getName()));
                 } else {
                     $io->error(sprintf("Failed to stop screen session '%s'", $screen->getName()));
@@ -56,7 +56,7 @@ class ScreenStopCommand extends Command
         }
 
         foreach ($names as $name) {
-            if ($this->screenManager->stop($name)) {
+            if ($this->screenManager->gracefullyStop($name)) {
                 $io->success(sprintf("Screen session '%s' stopped", $name));
             } else {
                 $io->error(sprintf("Failed to stop screen session '%s'", $name));

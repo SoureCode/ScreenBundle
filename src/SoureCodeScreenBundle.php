@@ -59,6 +59,7 @@ class SoureCodeScreenBundle extends AbstractBundle
                                 ->end()
                             ->end()
                             ->scalarNode('restart')
+                                ->setDeprecated('sourecode/screen-bundle', 'dev', 'The "restart" option is deprecated and will be removed in 1.0. Use external tools to just call start every several minutes.')
                                 ->defaultValue(false)
                                 ->info('If the screen should be restarted when it exits.')
                                 ->validate()
@@ -190,12 +191,6 @@ class SoureCodeScreenBundle extends AbstractBundle
             ->tag('console.command', [
                 'command' => 'screen:stop',
             ]);
-
-        $services->set(self::$PREFIX . 'event_listener.restart', RestartEventListener::class)
-            ->args([
-                service(self::$PREFIX . 'manager'),
-            ])
-            ->tag('kernel.event_subscriber');
     }
 
     public function build(ContainerBuilder $container): void

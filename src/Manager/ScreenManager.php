@@ -22,9 +22,9 @@ readonly class ScreenManager
     {
     }
 
-    public static function generateScreenName(ScreenInterface $screen): string
+    public function generateScreenName(ScreenInterface $screen): string
     {
-        return hash('sha256', $screen->getName() . implode('', $screen->getCommand()));
+        return hash('sha256', $this->getBaseDirectory() . $screen->getName() . implode('', $screen->getCommand()));
     }
 
     private function getLogDirectory(): string
@@ -53,7 +53,7 @@ readonly class ScreenManager
             return true;
         }
 
-        $screenName = self::generateScreenName($screen);
+        $screenName = $this->generateScreenName($screen);
 
         $logDir = $this->getLogDirectory();
 
@@ -127,7 +127,7 @@ readonly class ScreenManager
             return true;
         }
 
-        $screenName = self::generateScreenName($screen);
+        $screenName = $this->generateScreenName($screen);
 
         // Attempt a graceful quit by sending ctrl+c
         $process = new Process(['screen', '-S', $screenName, '-X', 'stuff', "\003"]);
@@ -198,7 +198,7 @@ readonly class ScreenManager
             return true;
         }
 
-        $screenName = self::generateScreenName($screen);
+        $screenName = $this->generateScreenName($screen);
 
         $process = new Process(['screen', '-S', $screenName, '-X', 'kill']);
         $process->run();
@@ -218,7 +218,7 @@ readonly class ScreenManager
             $screen = $nameOrScreen;
         }
 
-        $screenName = self::generateScreenName($screen);
+        $screenName = $this->generateScreenName($screen);
 
         $process = new Process(['screen', '-ls']);
 
@@ -239,7 +239,7 @@ readonly class ScreenManager
             $screen = $nameOrScreen;
         }
 
-        $screenName = self::generateScreenName($screen);
+        $screenName = $this->generateScreenName($screen);
 
         $logFile = $this->getLogFile($screenName);
 
@@ -262,7 +262,7 @@ readonly class ScreenManager
             $screen = $nameOrScreen;
         }
 
-        $screenName = self::generateScreenName($screen);
+        $screenName = $this->generateScreenName($screen);
 
         $process = new Process(['screen', '-r', $screenName]);
 

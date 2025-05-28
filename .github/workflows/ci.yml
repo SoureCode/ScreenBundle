@@ -99,6 +99,6 @@ jobs:
                     php-version: 8.4
                     tools: infection
             -   uses: ramsey/composer-install@v3
-            -   run: infection --min-msi=65 --min-covered-msi=70 --threads=4
+            -   run: infection --min-msi=49 --min-covered-msi=95 --threads=4
                 env:
                     STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}

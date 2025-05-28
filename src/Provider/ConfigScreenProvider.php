@@ -2,8 +2,8 @@
 
 namespace SoureCode\Bundle\Screen\Provider;
 
-use SoureCode\Bundle\Screen\Factory\ScreenFactoryInterface;
 use SoureCode\Bundle\Screen\Entity\ScreenInterface;
+use SoureCode\Bundle\Screen\Factory\ScreenFactoryInterface;
 
 class ConfigScreenProvider implements ScreenProviderInterface
 {
@@ -17,14 +17,10 @@ class ConfigScreenProvider implements ScreenProviderInterface
         /**
          * @var array<string, array{command: list<string>}>
          */
-        private readonly array                  $screenConfigs,
-    )
-    {
+        private readonly array $screenConfigs,
+    ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function all(): array
     {
         $keys = array_keys($this->screenConfigs);
@@ -41,7 +37,7 @@ class ConfigScreenProvider implements ScreenProviderInterface
     public function get(string $name): ScreenInterface
     {
         if (!$this->has($name)) {
-            throw new \InvalidArgumentException(sprintf('Screen "%s" not found.', $name));
+            throw new \InvalidArgumentException(\sprintf('Screen "%s" not found.', $name));
         }
 
         if (!isset($this->screens[$name])) {

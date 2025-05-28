@@ -10,8 +10,7 @@ class Screen implements ScreenInterface
          * @var list<string>
          */
         protected ?array $command = null,
-    )
-    {
+    ) {
     }
 
     public function getName(): string
@@ -19,9 +18,6 @@ class Screen implements ScreenInterface
         return $this->name;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getCommand(): array
     {
         return $this->command;

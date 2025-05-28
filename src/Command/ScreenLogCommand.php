@@ -19,9 +19,8 @@ class ScreenLogCommand extends Command
 {
     public function __construct(
         private readonly ScreenProviderInterface $screenProvider,
-        private readonly ScreenManager $screenManager
-    )
-    {
+        private readonly ScreenManager $screenManager,
+    ) {
         parent::__construct();
     }
 
@@ -39,7 +38,8 @@ class ScreenLogCommand extends Command
         if (!empty($names)) {
             foreach ($names as $name) {
                 if (!$this->screenProvider->has($name)) {
-                    $io->error(sprintf("Screen session '%s' does not exist", $name));
+                    $io->error(\sprintf("Screen session '%s' does not exist", $name));
+
                     return Command::FAILURE;
                 }
             }
@@ -48,9 +48,9 @@ class ScreenLogCommand extends Command
                 $logs = $this->screenManager->getLogs($screen);
 
                 if (empty($logs)) {
-                    $io->info(sprintf("Empty logs for screen session '%s'", $screen->getName()));
+                    $io->info(\sprintf("Empty logs for screen session '%s'", $screen->getName()));
                 } else {
-                    $io->section(sprintf("Logs for screen session '%s'", $screen->getName()));
+                    $io->section(\sprintf("Logs for screen session '%s'", $screen->getName()));
                     $io->listing(explode("\n", $logs));
                 }
             }
@@ -62,9 +62,9 @@ class ScreenLogCommand extends Command
             $logs = $this->screenManager->getLogs($name);
 
             if (empty($logs)) {
-                $io->info(sprintf("Empty logs for screen session '%s'", $name));
+                $io->info(\sprintf("Empty logs for screen session '%s'", $name));
             } else {
-                $io->section(sprintf("Logs for screen session '%s'", $name));
+                $io->section(\sprintf("Logs for screen session '%s'", $name));
                 $io->listing(explode("\n", $logs));
             }
         }

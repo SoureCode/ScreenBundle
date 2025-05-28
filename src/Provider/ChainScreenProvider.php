@@ -11,13 +11,9 @@ readonly class ChainScreenProvider implements ScreenProviderInterface
          * @var iterable<ScreenProviderInterface>
          */
         private iterable $providers,
-    )
-    {
+    ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function all(): array
     {
         $screens = [];
@@ -29,8 +25,8 @@ readonly class ChainScreenProvider implements ScreenProviderInterface
         $keys = [];
 
         foreach ($screens as $key => $screen) {
-            if (in_array($key, $keys, true)) {
-                throw new \InvalidArgumentException(sprintf('It is not allowed to have multiple screens with the same name "%s".', $key));
+            if (\in_array($key, $keys, true)) {
+                throw new \InvalidArgumentException(\sprintf('It is not allowed to have multiple screens with the same name "%s".', $key));
             }
 
             $keys[] = $key;
@@ -47,7 +43,7 @@ readonly class ChainScreenProvider implements ScreenProviderInterface
             }
         }
 
-        throw new \InvalidArgumentException(sprintf('Screen "%s" not found.', $name));
+        throw new \InvalidArgumentException(\sprintf('Screen "%s" not found.', $name));
     }
 
     public function has(string $name): bool

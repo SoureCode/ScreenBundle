@@ -2,12 +2,11 @@
 
 namespace SoureCode\Bundle\Screen\Command;
 
-use Psr\EventDispatcher\EventDispatcherInterface;
+use SoureCode\Bundle\Screen\Entity\ScreenInterface;
 use SoureCode\Bundle\Screen\Event\ScreenFailedEvent;
 use SoureCode\Bundle\Screen\Event\ScreenSignalReceivedEvent;
 use SoureCode\Bundle\Screen\Event\ScreenStartedEvent;
 use SoureCode\Bundle\Screen\Event\ScreenStoppedEvent;
-use SoureCode\Bundle\Screen\Entity\ScreenInterface;
 use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,6 +17,7 @@ use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[AsCommand(
     name: 'screen:run',
@@ -26,16 +26,15 @@ use Symfony\Component\Process\Process;
 )]
 class ScreenRunCommand extends Command implements SignalableCommandInterface
 {
-    private null|Process $process = null;
-    private null|ScreenInterface $screen = null;
+    private ?Process $process = null;
+    private ?ScreenInterface $screen = null;
 
     public function __construct(
-        private readonly ScreenProviderInterface  $screenProvider,
+        private readonly ScreenProviderInterface $screenProvider,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly string                   $baseDirectory,
-        private readonly string                   $environment,
-    )
-    {
+        private readonly string $baseDirectory,
+        private readonly string $environment,
+    ) {
         parent::__construct();
     }
 
@@ -56,7 +55,7 @@ class ScreenRunCommand extends Command implements SignalableCommandInterface
         $screenName = $input->getArgument('screenName');
 
         if (!$this->screenProvider->has($screenName)) {
-            throw new \InvalidArgumentException(sprintf('Screen "%s" not found.', $screenName));
+            throw new \InvalidArgumentException(\sprintf('Screen "%s" not found.', $screenName));
         }
 
         $this->screen = $this->screenProvider->get($screenName);
@@ -100,13 +99,13 @@ class ScreenRunCommand extends Command implements SignalableCommandInterface
     {
         $command = $screen->getCommand();
 
-        if (count($command) === 0) {
+        if (0 === \count($command)) {
             throw new \InvalidArgumentException('The command must be an array with at least one element.');
         }
 
         $first = $screen->getCommand()[0];
 
-        if ($first === 'php') {
+        if ('php' === $first) {
             $command[0] = $this->phpBinary();
         }
 

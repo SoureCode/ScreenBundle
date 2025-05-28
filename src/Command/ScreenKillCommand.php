@@ -19,9 +19,8 @@ class ScreenKillCommand extends Command
 {
     public function __construct(
         private readonly ScreenProviderInterface $screenProvider,
-        private readonly ScreenManager $screenManager
-    )
-    {
+        private readonly ScreenManager $screenManager,
+    ) {
         parent::__construct();
     }
 
@@ -39,16 +38,17 @@ class ScreenKillCommand extends Command
         if (!empty($names)) {
             foreach ($names as $name) {
                 if (!$this->screenProvider->has($name)) {
-                    $io->error(sprintf("Screen session '%s' does not exist", $name));
+                    $io->error(\sprintf("Screen session '%s' does not exist", $name));
+
                     return Command::FAILURE;
                 }
             }
         } else {
             foreach ($this->screenProvider->all() as $screen) {
                 if ($this->screenManager->kill($screen)) {
-                    $io->success(sprintf("Screen session '%s' killed", $screen->getName()));
+                    $io->success(\sprintf("Screen session '%s' killed", $screen->getName()));
                 } else {
-                    $io->error(sprintf("Failed to kill screen session '%s'", $screen->getName()));
+                    $io->error(\sprintf("Failed to kill screen session '%s'", $screen->getName()));
                 }
             }
 
@@ -57,9 +57,9 @@ class ScreenKillCommand extends Command
 
         foreach ($names as $name) {
             if ($this->screenManager->kill($name)) {
-                $io->success(sprintf("Screen session '%s' killed", $name));
+                $io->success(\sprintf("Screen session '%s' killed", $name));
             } else {
-                $io->error(sprintf("Failed to kill screen session '%s'", $name));
+                $io->error(\sprintf("Failed to kill screen session '%s'", $name));
             }
         }
 

@@ -1,0 +1,9 @@
+includes:
+    - phpstan-baseline.neon
+parameters:
+    editorUrl: '%%file%%:%%line%%'
+    editorUrlTitle: ' '
+    level: 10
+    paths:
+        - src
+        - tests

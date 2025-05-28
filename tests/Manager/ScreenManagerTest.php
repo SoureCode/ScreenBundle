@@ -7,6 +7,7 @@ use RuntimeException;
 use SoureCode\Bundle\Screen\Manager\ScreenManager;
 use SoureCode\Bundle\Screen\SoureCodeScreenBundle;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\MonologBundle\MonologBundle;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class ScreenManagerTest extends KernelTestCase
@@ -24,7 +25,9 @@ class ScreenManagerTest extends KernelTestCase
         /** @var TestKernel $kernel */
         $kernel = parent::createKernel($options);
         $kernel->setTestProjectDir(__DIR__ . '/../app');
+        $kernel->addTestBundle(MonologBundle::class);
         $kernel->addTestBundle(SoureCodeScreenBundle::class);
+        $kernel->addTestConfig(__DIR__ . '/../app/config/monolog.yaml');
         $kernel->addTestConfig(__DIR__ . '/../app/config/config.yml');
         $kernel->handleOptions($options);
 

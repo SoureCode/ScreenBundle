@@ -19,9 +19,8 @@ class ScreenAttachCommand extends Command
 {
     public function __construct(
         private readonly ScreenProviderInterface $screenProvider,
-        private readonly ScreenManager $screenManager
-    )
-    {
+        private readonly ScreenManager $screenManager,
+    ) {
         parent::__construct();
     }
 
@@ -37,12 +36,14 @@ class ScreenAttachCommand extends Command
         $name = $input->getArgument('name');
 
         if (!$name) {
-            $io->error("Name of screen session is required");
+            $io->error('Name of screen session is required');
+
             return Command::FAILURE;
         }
 
         if (!$this->screenProvider->has($name)) {
-            $io->error(sprintf("Screen session '%s' does not exist", $name));
+            $io->error(\sprintf("Screen session '%s' does not exist", $name));
+
             return Command::FAILURE;
         }
 

@@ -6,13 +6,14 @@ use SoureCode\Bundle\Screen\Entity\ScreenInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Contracts\EventDispatcher\Event;
 
-final  class ScreenSignalReceivedEvent extends Event
+final class ScreenSignalReceivedEvent extends Event
 {
     public function __construct(
         private readonly ScreenInterface $screen,
         private readonly Process $process,
         private readonly int $signal,
-    ) {}
+    ) {
+    }
 
     public function getScreen(): ScreenInterface
     {

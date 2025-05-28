@@ -1,0 +1,409 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Parameter \#1 \$name of method SoureCode\\Bundle\\Screen\\Provider\\ScreenProviderInterface\:\:has\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenAttachCommand.php
+
+		-
+			message: '#^Parameter \#1 \$nameOrScreen of method SoureCode\\Bundle\\Screen\\Manager\\ScreenManager\:\:attach\(\) expects SoureCode\\Bundle\\Screen\\Entity\\ScreenInterface\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenAttachCommand.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenAttachCommand.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 2
+			path: src/Command/ScreenKillCommand.php
+
+		-
+			message: '#^Parameter \#1 \$name of method SoureCode\\Bundle\\Screen\\Provider\\ScreenProviderInterface\:\:has\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenKillCommand.php
+
+		-
+			message: '#^Parameter \#1 \$nameOrScreen of method SoureCode\\Bundle\\Screen\\Manager\\ScreenManager\:\:kill\(\) expects SoureCode\\Bundle\\Screen\\Entity\\ScreenInterface\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenKillCommand.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Command/ScreenKillCommand.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 2
+			path: src/Command/ScreenLogCommand.php
+
+		-
+			message: '#^Parameter \#1 \$name of method SoureCode\\Bundle\\Screen\\Provider\\ScreenProviderInterface\:\:has\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenLogCommand.php
+
+		-
+			message: '#^Parameter \#1 \$nameOrScreen of method SoureCode\\Bundle\\Screen\\Manager\\ScreenManager\:\:getLogs\(\) expects SoureCode\\Bundle\\Screen\\Entity\\ScreenInterface\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenLogCommand.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Command/ScreenLogCommand.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 2
+			path: src/Command/ScreenRestartCommand.php
+
+		-
+			message: '#^Parameter \#1 \$name of method SoureCode\\Bundle\\Screen\\Provider\\ScreenProviderInterface\:\:has\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenRestartCommand.php
+
+		-
+			message: '#^Parameter \#1 \$nameOrScreen of method SoureCode\\Bundle\\Screen\\Manager\\ScreenManager\:\:gracefullyStop\(\) expects SoureCode\\Bundle\\Screen\\Entity\\ScreenInterface\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenRestartCommand.php
+
+		-
+			message: '#^Parameter \#1 \$nameOrScreen of method SoureCode\\Bundle\\Screen\\Manager\\ScreenManager\:\:start\(\) expects SoureCode\\Bundle\\Screen\\Entity\\ScreenInterface\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenRestartCommand.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 5
+			path: src/Command/ScreenRestartCommand.php
+
+		-
+			message: '#^Method SoureCode\\Bundle\\Screen\\Command\\ScreenRunCommand\:\:execute\(\) should return int but returns int\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Command/ScreenRunCommand.php
+
+		-
+			message: '#^Method SoureCode\\Bundle\\Screen\\Command\\ScreenRunCommand\:\:getSubscribedSignals\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/ScreenRunCommand.php
+
+		-
+			message: '#^Method SoureCode\\Bundle\\Screen\\Command\\ScreenRunCommand\:\:resolveCommand\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Command/ScreenRunCommand.php
+
+		-
+			message: '#^Parameter \#1 \$messages of method Symfony\\Component\\Console\\Output\\OutputInterface\:\:write\(\) expects iterable\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Command/ScreenRunCommand.php
+
+		-
+			message: '#^Parameter \#1 \$name of method SoureCode\\Bundle\\Screen\\Provider\\ScreenProviderInterface\:\:get\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenRunCommand.php
+
+		-
+			message: '#^Parameter \#1 \$name of method SoureCode\\Bundle\\Screen\\Provider\\ScreenProviderInterface\:\:has\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenRunCommand.php
+
+		-
+			message: '#^Parameter \#1 \$screen of class SoureCode\\Bundle\\Screen\\Event\\ScreenSignalReceivedEvent constructor expects SoureCode\\Bundle\\Screen\\Entity\\ScreenInterface, SoureCode\\Bundle\\Screen\\Entity\\ScreenInterface\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenRunCommand.php
+
+		-
+			message: '#^Parameter \#2 \$process of class SoureCode\\Bundle\\Screen\\Event\\ScreenSignalReceivedEvent constructor expects Symfony\\Component\\Process\\Process, Symfony\\Component\\Process\\Process\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenRunCommand.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenRunCommand.php
+
+		-
+			message: '#^Parameter \#3 \$exitCode of class SoureCode\\Bundle\\Screen\\Event\\ScreenStoppedEvent constructor expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenRunCommand.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Symfony\\Component\\Process\\Process\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Command/ScreenRunCommand.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 2
+			path: src/Command/ScreenStartCommand.php
+
+		-
+			message: '#^Parameter \#1 \$name of method SoureCode\\Bundle\\Screen\\Provider\\ScreenProviderInterface\:\:has\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenStartCommand.php
+
+		-
+			message: '#^Parameter \#1 \$nameOrScreen of method SoureCode\\Bundle\\Screen\\Manager\\ScreenManager\:\:start\(\) expects SoureCode\\Bundle\\Screen\\Entity\\ScreenInterface\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenStartCommand.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Command/ScreenStartCommand.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 2
+			path: src/Command/ScreenStatusCommand.php
+
+		-
+			message: '#^Parameter \#1 \$name of method SoureCode\\Bundle\\Screen\\Provider\\ScreenProviderInterface\:\:has\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenStatusCommand.php
+
+		-
+			message: '#^Parameter \#1 \$nameOrScreen of method SoureCode\\Bundle\\Screen\\Manager\\ScreenManager\:\:isRunning\(\) expects SoureCode\\Bundle\\Screen\\Entity\\ScreenInterface\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenStatusCommand.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: src/Command/ScreenStatusCommand.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 2
+			path: src/Command/ScreenStopCommand.php
+
+		-
+			message: '#^Parameter \#1 \$name of method SoureCode\\Bundle\\Screen\\Provider\\ScreenProviderInterface\:\:has\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenStopCommand.php
+
+		-
+			message: '#^Parameter \#1 \$nameOrScreen of method SoureCode\\Bundle\\Screen\\Manager\\ScreenManager\:\:gracefullyStop\(\) expects SoureCode\\Bundle\\Screen\\Entity\\ScreenInterface\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Command/ScreenStopCommand.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Command/ScreenStopCommand.php
+
+		-
+			message: '#^Method SoureCode\\Bundle\\Screen\\Entity\\Screen\:\:getCommand\(\) should return list\<string\> but returns list\<string\>\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Entity/Screen.php
+
+		-
+			message: '#^Method SoureCode\\Bundle\\Screen\\Entity\\Screen\:\:getName\(\) should return string but returns string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Entity/Screen.php
+
+		-
+			message: '#^Method SoureCode\\Bundle\\Screen\\Entity\\Screen\:\:setCommand\(\) has parameter \$command with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Entity/Screen.php
+
+		-
+			message: '#^Property SoureCode\\Bundle\\Screen\\Entity\\Screen\:\:\$command \(list\<string\>\|null\) does not accept array\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: src/Entity/Screen.php
+
+		-
+			message: '#^Method SoureCode\\Bundle\\Screen\\Manager\\ScreenManager\:\:getLogs\(\) should return string\|null but returns string\|false\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Manager/ScreenManager.php
+
+		-
+			message: '#^Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition\:\:fixXmlConfig\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method arrayNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method arrayPrototype\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method beforeNormalization\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method castToArray\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method children\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method defaultValue\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method end\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 13
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method ifTrue\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method info\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method isRequired\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method scalarNode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method scalarPrototype\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method setDeprecated\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method thenInvalid\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method useAttributeAsKey\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Cannot call method validate\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Method SoureCode\\Bundle\\Screen\\SoureCodeScreenBundle\:\:loadExtension\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Parameter \#1 \$object_or_class of function is_a expects object\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Parameter \#2 \$subject of function preg_match expects string, string\|false\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/SoureCodeScreenBundle.php
+
+		-
+			message: '#^Method SoureCode\\Bundle\\Screen\\Tests\\BundleInitializationTest\:\:createKernel\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/BundleInitializationTest.php
+
+		-
+			message: '#^Method SoureCode\\Bundle\\Screen\\Tests\\Manager\\ScreenManagerTest\:\:createKernel\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Manager/ScreenManagerTest.php
+
+		-
+			message: '#^Method SoureCode\\Bundle\\Screen\\Tests\\Manager\\ScreenManagerTest\:\:getScreenManager\(\) should return SoureCode\\Bundle\\Screen\\Manager\\ScreenManager but returns object\.$#'
+			identifier: return.type
+			count: 1
+			path: tests/Manager/ScreenManagerTest.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of method PHPUnit\\Framework\\Assert\:\:assertStringContainsString\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Manager/ScreenManagerTest.php

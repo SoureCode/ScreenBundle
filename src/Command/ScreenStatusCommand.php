@@ -19,9 +19,8 @@ class ScreenStatusCommand extends Command
 {
     public function __construct(
         private readonly ScreenProviderInterface $screenProvider,
-        private readonly ScreenManager $screenManager
-    )
-    {
+        private readonly ScreenManager $screenManager,
+    ) {
         parent::__construct();
     }
 
@@ -39,7 +38,8 @@ class ScreenStatusCommand extends Command
         if (!empty($names)) {
             foreach ($names as $name) {
                 if (!$this->screenProvider->has($name)) {
-                    $io->error(sprintf("Screen session '%s' does not exist", $name));
+                    $io->error(\sprintf("Screen session '%s' does not exist", $name));
+
                     return Command::FAILURE;
                 }
             }
@@ -47,7 +47,7 @@ class ScreenStatusCommand extends Command
             foreach ($this->screenProvider->all() as $screen) {
                 $isRunning = $this->screenManager->isRunning($screen);
 
-                $io->writeln(sprintf("%s: %s", $screen->getName(), $isRunning ? 'running' : 'not running'));
+                $io->writeln(\sprintf('%s: %s', $screen->getName(), $isRunning ? 'running' : 'not running'));
             }
 
             return Command::SUCCESS;
@@ -56,7 +56,7 @@ class ScreenStatusCommand extends Command
         foreach ($names as $name) {
             $isRunning = $this->screenManager->isRunning($name);
 
-            $io->writeln(sprintf("%s: %s", $name, $isRunning ? 'running' : 'not running'));
+            $io->writeln(\sprintf('%s: %s', $name, $isRunning ? 'running' : 'not running'));
         }
 
         return Command::SUCCESS;

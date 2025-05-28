@@ -1,0 +1,104 @@
+name: CI
+on:
+    pull_request: null
+    push: null
+permissions:
+    contents: read
+
+jobs:
+    dependency-validation:
+        name: Dependency Validation
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            -   uses: actions/checkout@v4
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.4
+                    tools: composer-normalize, composer-require-checker
+            -   uses: ramsey/composer-install@v3
+            -   run: composer validate --no-ansi --strict composer.json
+            -   run: composer-normalize --dry-run
+            -   run: composer-require-checker check
+    coding-guidelines:
+        name: Coding Guidelines
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            -   uses: actions/checkout@v4
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.3 # php-cs-fixer is not yet compatible with 8.4
+                    tools: php-cs-fixer
+            -   run: php-cs-fixer fix --dry-run --show-progress=dots --using-cache=no --verbose
+    static-analysis:
+        name: Static Analysis
+        needs:
+            - dependency-validation
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            -   uses: actions/checkout@v4
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.4
+                    tools: phpstan
+            -   uses: "ramsey/composer-install@v3"
+            -   run: phpstan --memory-limit=512M --ansi --no-progress --error-format=github
+    unit-tests:
+        name: Unit Tests
+        needs:
+            - dependency-validation
+        runs-on: ${{ matrix.os }}
+        timeout-minutes: 5
+        strategy:
+            fail-fast: false
+            matrix:
+                os:
+                    - ubuntu-latest
+                php-version:
+                    - "8.4"
+                    - "8.5"
+        steps:
+            -   uses: actions/checkout@v4
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-version }}
+            -   uses: ramsey/composer-install@v3
+            -   run: vendor/bin/phpunit --log-junit junit.xml
+            -   if: ${{ !cancelled() }}
+                uses: codecov/test-results-action@v1
+                with:
+                    token: ${{ secrets.CODECOV_TOKEN }}
+    coverage:
+        name: Coverage
+        needs:
+            - dependency-validation
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            -   uses: actions/checkout@v4
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.4
+            -   uses: ramsey/composer-install@v3
+            -   run: vendor/bin/phpunit --coverage-clover=coverage.xml
+            -   uses: codecov/codecov-action@v5
+                env:
+                    CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    mutation-tests:
+        name: Mutation Tests
+        needs:
+            - dependency-validation
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            -   uses: actions/checkout@v4
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.4
+                    tools: infection
+            -   uses: ramsey/composer-install@v3
+            -   run: infection --min-msi=65 --min-covered-msi=70 --threads=4
+                env:
+                    STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}

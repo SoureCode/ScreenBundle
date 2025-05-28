@@ -19,9 +19,8 @@ class ScreenRestartCommand extends Command
 {
     public function __construct(
         private readonly ScreenProviderInterface $screenProvider,
-        private readonly ScreenManager $screenManager
-    )
-    {
+        private readonly ScreenManager $screenManager,
+    ) {
         parent::__construct();
     }
 
@@ -40,22 +39,23 @@ class ScreenRestartCommand extends Command
         if (!empty($names)) {
             foreach ($names as $name) {
                 if (!$this->screenProvider->has($name)) {
-                    $io->error(sprintf("Screen session '%s' does not exist", $name));
+                    $io->error(\sprintf("Screen session '%s' does not exist", $name));
+
                     return Command::FAILURE;
                 }
             }
         } else {
             foreach ($this->screenProvider->all() as $screen) {
                 if ($this->screenManager->gracefullyStop($screen)) {
-                    $io->success(sprintf("Screen session '%s' stopped", $screen->getName()));
+                    $io->success(\sprintf("Screen session '%s' stopped", $screen->getName()));
                 } else {
-                    $io->error(sprintf("Failed to stop screen session '%s'", $screen->getName()));
+                    $io->error(\sprintf("Failed to stop screen session '%s'", $screen->getName()));
                 }
 
                 if ($this->screenManager->start($screen)) {
-                    $io->success(sprintf("Screen session '%s' started", $screen->getName()));
+                    $io->success(\sprintf("Screen session '%s' started", $screen->getName()));
                 } else {
-                    $io->error(sprintf("Failed to start screen session '%s'", $screen->getName()));
+                    $io->error(\sprintf("Failed to start screen session '%s'", $screen->getName()));
                 }
             }
 
@@ -64,15 +64,15 @@ class ScreenRestartCommand extends Command
 
         foreach ($names as $name) {
             if ($this->screenManager->gracefullyStop($name)) {
-                $io->success(sprintf("Screen session '%s' stopped", $name));
+                $io->success(\sprintf("Screen session '%s' stopped", $name));
             } else {
-                $io->error(sprintf("Failed to stop screen session '%s'", $name));
+                $io->error(\sprintf("Failed to stop screen session '%s'", $name));
             }
 
             if ($this->screenManager->start($name)) {
-                $io->success(sprintf("Screen session '%s' started", $name));
+                $io->success(\sprintf("Screen session '%s' started", $name));
             } else {
-                $io->error(sprintf("Failed to start screen session '%s'", $name));
+                $io->error(\sprintf("Failed to start screen session '%s'", $name));
             }
         }
 

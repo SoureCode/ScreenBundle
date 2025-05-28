@@ -13,18 +13,17 @@ use Symfony\Component\Process\Process;
 readonly class ScreenManager
 {
     public function __construct(
-        private string                  $baseDirectory,
-        private string                  $environment,
-        private Filesystem              $filesystem,
+        private string $baseDirectory,
+        private string $environment,
+        private Filesystem $filesystem,
         private ScreenProviderInterface $provider,
-        private LoggerInterface         $logger,
-    )
-    {
+        private LoggerInterface $logger,
+    ) {
     }
 
     public function generateScreenName(ScreenInterface $screen): string
     {
-        return hash('sha256', $this->getBaseDirectory() . $screen->getName() . implode('', $screen->getCommand()));
+        return hash('sha256', $this->getBaseDirectory().$screen->getName().implode('', $screen->getCommand()));
     }
 
     private function getLogDirectory(): string
@@ -34,14 +33,14 @@ readonly class ScreenManager
 
     private function getLogFile(string $screenName): string
     {
-        return Path::join($this->getLogDirectory(), sprintf("screen-%s.log", $screenName));
+        return Path::join($this->getLogDirectory(), \sprintf('screen-%s.log', $screenName));
     }
 
     public function start(ScreenInterface|string $nameOrScreen): bool
     {
-        if (is_string($nameOrScreen)) {
+        if (\is_string($nameOrScreen)) {
             if (!$this->provider->has($nameOrScreen)) {
-                throw new \InvalidArgumentException(sprintf('Screen "%s" not found.', $nameOrScreen));
+                throw new \InvalidArgumentException(\sprintf('Screen "%s" not found.', $nameOrScreen));
             }
 
             $screen = $this->provider->get($nameOrScreen);
@@ -68,7 +67,7 @@ readonly class ScreenManager
 
         $this->filesystem->remove($logFile);
 
-        $this->logger->info(sprintf('Starting screen "%s"', $screen->getName()), [
+        $this->logger->info(\sprintf('Starting screen "%s"', $screen->getName()), [
             'screen' => $screen->getName(),
             'command' => $screen->getCommand(),
             'php' => $phpBinary,
@@ -97,7 +96,7 @@ readonly class ScreenManager
 
         $process->run();
 
-        $this->logger->info(sprintf('Screen "%s" started', $screen->getName()), [
+        $this->logger->info(\sprintf('Screen "%s" started', $screen->getName()), [
             'screen' => $screen->getName(),
             'command' => $screen->getCommand(),
             'php' => $phpBinary,
@@ -113,9 +112,9 @@ readonly class ScreenManager
 
     public function stop(ScreenInterface|string $nameOrScreen): bool
     {
-        if (is_string($nameOrScreen)) {
+        if (\is_string($nameOrScreen)) {
             if (!$this->provider->has($nameOrScreen)) {
-                throw new \InvalidArgumentException(sprintf('Screen "%s" not found.', $nameOrScreen));
+                throw new \InvalidArgumentException(\sprintf('Screen "%s" not found.', $nameOrScreen));
             }
 
             $screen = $this->provider->get($nameOrScreen);
@@ -139,13 +138,13 @@ readonly class ScreenManager
 
     /**
      * @param int $timeout - Time to wait in seconds for the screen to kill after trying to gracefully stop it
-     * @param int $sleep - Time to sleep in microseconds between checks
+     * @param int $sleep   - Time to sleep in microseconds between checks
      */
     public function gracefullyStop(ScreenInterface|string $nameOrScreen, int $timeout = 5, int $sleep = 1000): bool
     {
-        if (is_string($nameOrScreen)) {
+        if (\is_string($nameOrScreen)) {
             if (!$this->provider->has($nameOrScreen)) {
-                throw new \InvalidArgumentException(sprintf('Screen "%s" not found.', $nameOrScreen));
+                throw new \InvalidArgumentException(\sprintf('Screen "%s" not found.', $nameOrScreen));
             }
 
             $screen = $this->provider->get($nameOrScreen);
@@ -177,16 +176,14 @@ readonly class ScreenManager
     }
 
     /**
-     * @param ScreenInterface|string $nameOrScreen
      * @param int $timeout - Time to wait in seconds for the screen to kill after trying to gracefully stop it
-     * @param int $sleep - Time to sleep in microseconds between checks
-     * @return bool
+     * @param int $sleep   - Time to sleep in microseconds between checks
      */
     public function kill(ScreenInterface|string $nameOrScreen, int $timeout = 5, int $sleep = 1000): bool
     {
-        if (is_string($nameOrScreen)) {
+        if (\is_string($nameOrScreen)) {
             if (!$this->provider->has($nameOrScreen)) {
-                throw new \InvalidArgumentException(sprintf('Screen "%s" not found.', $nameOrScreen));
+                throw new \InvalidArgumentException(\sprintf('Screen "%s" not found.', $nameOrScreen));
             }
 
             $screen = $this->provider->get($nameOrScreen);
@@ -208,9 +205,9 @@ readonly class ScreenManager
 
     public function isRunning(ScreenInterface|string $nameOrScreen): bool
     {
-        if (is_string($nameOrScreen)) {
+        if (\is_string($nameOrScreen)) {
             if (!$this->provider->has($nameOrScreen)) {
-                throw new \InvalidArgumentException(sprintf('Screen "%s" not found.', $nameOrScreen));
+                throw new \InvalidArgumentException(\sprintf('Screen "%s" not found.', $nameOrScreen));
             }
 
             $screen = $this->provider->get($nameOrScreen);
@@ -229,9 +226,9 @@ readonly class ScreenManager
 
     public function getLogs(ScreenInterface|string $nameOrScreen): ?string
     {
-        if (is_string($nameOrScreen)) {
+        if (\is_string($nameOrScreen)) {
             if (!$this->provider->has($nameOrScreen)) {
-                throw new \InvalidArgumentException(sprintf('Screen "%s" not found.', $nameOrScreen));
+                throw new \InvalidArgumentException(\sprintf('Screen "%s" not found.', $nameOrScreen));
             }
 
             $screen = $this->provider->get($nameOrScreen);
@@ -252,9 +249,9 @@ readonly class ScreenManager
 
     public function attach(ScreenInterface|string $nameOrScreen): void
     {
-        if (is_string($nameOrScreen)) {
+        if (\is_string($nameOrScreen)) {
             if (!$this->provider->has($nameOrScreen)) {
-                throw new \InvalidArgumentException(sprintf('Screen "%s" not found.', $nameOrScreen));
+                throw new \InvalidArgumentException(\sprintf('Screen "%s" not found.', $nameOrScreen));
             }
 
             $screen = $this->provider->get($nameOrScreen);

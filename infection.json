@@ -1,0 +1,22 @@
+{
+  "source": {
+    "directories": [
+      "src"
+    ],
+    "excludes": [
+      "SoureCodeDoctrineExtensionBundle.php",
+      "/Interface\\.php/"
+    ]
+  },
+  "timeout": 10,
+  "logs": {
+    "text": "coverage/infections.log",
+    "html": "coverage/mutants.html",
+    "stryker": {
+      "badge": "master"
+    }
+  },
+  "mutators": {
+    "@default": true
+  }
+}

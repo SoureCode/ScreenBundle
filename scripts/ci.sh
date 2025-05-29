@@ -16,7 +16,7 @@ symfony composer validate --no-ansi --strict composer.json
 kyx composer-normalize --dry-run
 kyx composer-require-checker check
 kyx composer-unused
-kyx php-cs-fixer fix --dry-run --show-progress=dots --using-cache=no --verbose
+FORCED_PHP_VERSION=8.3 kyx php-cs-fixer fix --dry-run --show-progress=dots --using-cache=no --verbose
 kyx phpstan analyse --memory-limit=512M --ansi --no-progress --error-format=table
 vendor/bin/phpunit
 kyx infection --threads=4

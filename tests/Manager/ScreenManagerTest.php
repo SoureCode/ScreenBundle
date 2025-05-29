@@ -8,13 +8,20 @@ use RuntimeException;
 use SoureCode\Bundle\Screen\Factory\ScreenFactory;
 use SoureCode\Bundle\Screen\Manager\ScreenManager;
 use SoureCode\Bundle\Screen\Model\Screen;
+use SoureCode\Bundle\Screen\Model\ScreenInterface;
 use SoureCode\Bundle\Screen\Provider\ArrayScreenProvider;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\Process;
 
 class ScreenManagerTest extends TestCase
 {
     private const int TIMEOUT_SECONDS = 5;
     private const int SLEEP_MICROSECONDS = 100;
+
+    /**
+     * @var string[] $screenNames
+     */
+    private array $screenNames = [];
 
     private function getScreenManager(string $randomEcho, int $randomSleep): ScreenManager
     {
@@ -31,13 +38,41 @@ class ScreenManagerTest extends TestCase
         $filesystem = new Filesystem();
         $logger = new NullLogger();
 
-        return new ScreenManager(
+        $screenManager = new ScreenManager(
             realpath(__DIR__.'/../app'),
             'test',
             $filesystem,
             $screenProvider,
             $logger,
         );
+
+        /**
+         * @var ScreenInterface[] $screens
+         */
+        $screens = [];
+        $screens[] = $screenManager->resolveScreen('echoTest');
+        $screens[] = $screenManager->resolveScreen('daemonTest');
+
+        foreach ($screens as $screen) {
+            $this->screenNames[] = $screenManager->generateScreenName($screen);
+        }
+
+        return $screenManager;
+    }
+
+    private function clearScreens(): void
+    {
+        foreach ($this->screenNames as $screenName) {
+            $killProcess = new Process(['screen', '-S', $screenName, '-X', 'quit']);
+            $killProcess->run();
+        }
+
+        $this->screenNames = [];
+    }
+
+    protected function tearDown(): void
+    {
+        $this->clearScreens();
     }
 
     public function testStartAndLogs(): void

@@ -87,7 +87,7 @@ readonly class ScreenManager
         return $process->isSuccessful();
     }
 
-    protected function resolveScreen(ScreenInterface|string $nameOrScreen): ScreenInterface
+    public function resolveScreen(ScreenInterface|string $nameOrScreen): ScreenInterface
     {
         if (\is_string($nameOrScreen)) {
             if (!$this->provider->has($nameOrScreen)) {
@@ -115,7 +115,7 @@ readonly class ScreenManager
         return str_contains($process->getOutput(), $screenName);
     }
 
-    private function generateScreenName(ScreenInterface $screen): string
+    public function generateScreenName(ScreenInterface $screen): string
     {
         return hash('sha256', \sprintf('%s%s%s', $this->getBaseDirectory(), $screen->getName(), implode('', $screen->getCommand())));
     }

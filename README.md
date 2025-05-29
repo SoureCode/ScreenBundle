@@ -61,3 +61,7 @@ soure_code_screen:
     worker1:
       command: [ "php", "bin/console", "messenger:consume", "async", "--limit", "10", "-vv" ]
 ```
+
+## Development
+
+**Note:** To run infection threaded the tests are written to be random, this causes to generate a lot of log files in the `tests/app/var/log` directory.

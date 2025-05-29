@@ -3,7 +3,4 @@ soure_code_screen:
         echoTest:
             command: ["echo", "Hello World"]
         daemonTest:
-            command: ["sleep", "5"]
-        restartTest:
-            command: ["sleep", "2"]
-            restart: true
+            command: ["sleep", "10"]

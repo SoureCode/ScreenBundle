@@ -2,41 +2,59 @@
 
 namespace SoureCode\Bundle\Screen\Tests\Manager;
 
-use Nyholm\BundleTest\TestKernel;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use RuntimeException;
+use SoureCode\Bundle\Screen\Factory\ScreenFactory;
 use SoureCode\Bundle\Screen\Manager\ScreenManager;
-use SoureCode\Bundle\Screen\SoureCodeScreenBundle;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Bundle\MonologBundle\MonologBundle;
-use Symfony\Component\HttpKernel\KernelInterface;
+use SoureCode\Bundle\Screen\Model\Screen;
+use SoureCode\Bundle\Screen\Provider\ArrayScreenProvider;
+use Symfony\Component\Filesystem\Filesystem;
 
-class ScreenManagerTest extends KernelTestCase
+class ScreenManagerTest extends TestCase
 {
-    private const int TIMEOUT_SECONDS = 10;
-    private const int SLEEP_MICROSECONDS = 1000;
+    private const int TIMEOUT_SECONDS = 5;
+    private const int SLEEP_MICROSECONDS = 100;
 
-    protected static function getKernelClass(): string
+    private function getScreenManager(string $randomEcho, int $randomSleep): ScreenManager
     {
-        return TestKernel::class;
+        $factory = new ScreenFactory(Screen::class);
+
+        $screenProvider = new ArrayScreenProvider(
+            $factory,
+            [
+                'echoTest' => ['command' => ['echo', $randomEcho]],
+                'daemonTest' => ['command' => ['sleep', $randomSleep]],
+            ]
+        );
+
+        $filesystem = new Filesystem();
+        $logger = new NullLogger();
+
+        return new ScreenManager(
+            realpath(__DIR__.'/../app'),
+            'test',
+            $filesystem,
+            $screenProvider,
+            $logger,
+        );
     }
 
-    protected static function createKernel(array $options = []): KernelInterface
+    public function testStartAndLogs(): void
     {
-        /** @var TestKernel $kernel */
-        $kernel = parent::createKernel($options);
-        $kernel->setTestProjectDir(__DIR__ . '/../app');
-        $kernel->addTestBundle(MonologBundle::class);
-        $kernel->addTestBundle(SoureCodeScreenBundle::class);
-        $kernel->addTestConfig(__DIR__ . '/../app/config/monolog.yaml');
-        $kernel->addTestConfig(__DIR__ . '/../app/config/config.yml');
-        $kernel->handleOptions($options);
+        // Arrange
+        $randomEcho = bin2hex(random_bytes(10));
+        $randomSleep = random_int(10, PHP_INT_MAX);
+        $screenManager = $this->getScreenManager($randomEcho, $randomSleep);
 
-        return $kernel;
-    }
+        // Act
+        $screenStarted = $screenManager->start('echoTest');
+        $this->waitForScreenState($screenManager, 'echoTest', false, 'stop');
+        $log = $screenManager->getLogs('echoTest');
 
-    private function getScreenManager(): ScreenManager
-    {
-        return self::getContainer()->get(ScreenManager::class);
+        // Assert
+        $this->assertTrue($screenStarted, 'Failed to start screen "echoTest".');
+        $this->assertStringContainsString($randomEcho, $log, 'Expected log to contain the random text.');
     }
 
     private function waitForScreenState(ScreenManager $screenManager, string $name, bool $expectedState, string $operation): void
@@ -52,25 +70,12 @@ class ScreenManagerTest extends KernelTestCase
         }
     }
 
-    public function testStartAndLogs(): void
-    {
-        // Arrange
-        $screenManager = $this->getScreenManager();
-
-        // Act
-        $screenStarted = $screenManager->start('echoTest');
-        $this->waitForScreenState($screenManager, 'echoTest', false, 'stop'); // Wait for the command to complete
-        $log = $screenManager->getLogs('echoTest');
-
-        // Assert
-        $this->assertTrue($screenStarted, 'Failed to start screen "echoTest".');
-        $this->assertStringContainsString('Hello World', $log, 'Expected log "Hello World" not found for "echoTest".');
-    }
-
     public function testIsRunning(): void
     {
         // Arrange
-        $screenManager = $this->getScreenManager();
+        $randomEcho = bin2hex(random_bytes(10));
+        $randomSleep = random_int(10, PHP_INT_MAX);
+        $screenManager = $this->getScreenManager($randomEcho, $randomSleep);
 
         // Act
         $screenStarted = $screenManager->start('daemonTest');
@@ -90,7 +95,9 @@ class ScreenManagerTest extends KernelTestCase
     public function testKill(): void
     {
         // Arrange
-        $screenManager = $this->getScreenManager();
+        $randomEcho = bin2hex(random_bytes(10));
+        $randomSleep = random_int(10, PHP_INT_MAX);
+        $screenManager = $this->getScreenManager($randomEcho, $randomSleep);
 
         // Act
         $screenStarted = $screenManager->start('daemonTest');
@@ -109,7 +116,9 @@ class ScreenManagerTest extends KernelTestCase
     public function testStop(): void
     {
         // Arrange
-        $screenManager = $this->getScreenManager();
+        $randomEcho = bin2hex(random_bytes(10));
+        $randomSleep = random_int(10, PHP_INT_MAX);
+        $screenManager = $this->getScreenManager($randomEcho, $randomSleep);
 
         // Act
         $screenStarted = $screenManager->start('daemonTest');

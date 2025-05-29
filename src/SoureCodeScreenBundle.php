@@ -5,7 +5,6 @@ namespace SoureCode\Bundle\Screen;
 use SoureCode\Bundle\Screen\Command\ScreenAttachCommand;
 use SoureCode\Bundle\Screen\Command\ScreenKillCommand;
 use SoureCode\Bundle\Screen\Command\ScreenLogCommand;
-use SoureCode\Bundle\Screen\Command\ScreenRunCommand;
 use SoureCode\Bundle\Screen\Command\ScreenStartCommand;
 use SoureCode\Bundle\Screen\Command\ScreenStatusCommand;
 use SoureCode\Bundle\Screen\Command\ScreenStopCommand;
@@ -119,18 +118,6 @@ class SoureCodeScreenBundle extends AbstractBundle
 
         $services->alias(ScreenManager::class, self::$PREFIX.'manager')
             ->public();
-
-        $services->set(self::$PREFIX.'command.run', ScreenRunCommand::class)
-            ->args([
-                service(self::$PREFIX.'provider.chain'),
-                service('event_dispatcher'),
-                param('kernel.project_dir'),
-                param('kernel.environment'),
-            ])
-            ->tag('console.command', [
-                'command' => 'screen:run',
-                'hidden' => true,
-            ]);
 
         $services->set(self::$PREFIX.'command.attach', ScreenAttachCommand::class)
             ->args([

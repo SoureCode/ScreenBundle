@@ -7,19 +7,19 @@ parameters:
 			path: tests/BundleInitializationTest.php
 
 		-
-			message: '#^Method SoureCode\\Bundle\\Screen\\Tests\\Manager\\ScreenManagerTest\:\:createKernel\(\) has parameter \$options with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/Manager/ScreenManagerTest.php
-
-		-
-			message: '#^Method SoureCode\\Bundle\\Screen\\Tests\\Manager\\ScreenManagerTest\:\:getScreenManager\(\) should return SoureCode\\Bundle\\Screen\\Manager\\ScreenManager but returns object\.$#'
-			identifier: return.type
+			message: '#^Parameter \#1 \$baseDirectory of class SoureCode\\Bundle\\Screen\\Manager\\ScreenManager constructor expects string, string\|false given\.$#'
+			identifier: argument.type
 			count: 1
 			path: tests/Manager/ScreenManagerTest.php
 
 		-
 			message: '#^Parameter \#2 \$haystack of method PHPUnit\\Framework\\Assert\:\:assertStringContainsString\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Manager/ScreenManagerTest.php
+
+		-
+			message: '#^Parameter \#2 \$screenDefinitions of class SoureCode\\Bundle\\Screen\\Provider\\ArrayScreenProvider constructor expects array\<string, array\{command\: list\<string\>\}\>, array\{echoTest\: array\{command\: array\{''echo'', string\}\}, daemonTest\: array\{command\: array\{''sleep'', int\}\}\} given\.$#'
 			identifier: argument.type
 			count: 1
 			path: tests/Manager/ScreenManagerTest.php

@@ -15,10 +15,11 @@ jobs:
             -   uses: shivammathur/setup-php@v2
                 with:
                     php-version: 8.4
-                    tools: composer-normalize, composer-require-checker
+                    tools: composer-normalize, composer-require-checker, composer-unused
             -   uses: ramsey/composer-install@v3
             -   run: composer validate --no-ansi --strict composer.json
             -   run: composer-normalize --dry-run
+            -   run: composer-unused
             -   run: composer-require-checker check
     coding-guidelines:
         name: Coding Guidelines

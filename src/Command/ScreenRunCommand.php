@@ -10,7 +10,6 @@ use SoureCode\Bundle\Screen\Event\ScreenStoppedEvent;
 use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Command\SignalableCommandInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
@@ -24,7 +23,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
     description: 'Run the given screen.',
     hidden: true,
 )]
-class ScreenRunCommand extends Command implements SignalableCommandInterface
+class ScreenRunCommand extends Command
 {
     private ?Process $process = null;
     private ?ScreenInterface $screen = null;
@@ -52,6 +51,9 @@ class ScreenRunCommand extends Command implements SignalableCommandInterface
 
         $errorOutput = $output->getErrorOutput();
 
+        /**
+         * @var string $screenName
+         */
         $screenName = $input->getArgument('screenName');
 
         if (!$this->screenProvider->has($screenName)) {
@@ -73,7 +75,7 @@ class ScreenRunCommand extends Command implements SignalableCommandInterface
         );
 
         try {
-            $this->process->start(function ($type, $buffer) use ($errorOutput, $output) {
+            $this->process->start(function (string $type, string $buffer) use ($errorOutput, $output) {
                 if (Process::ERR === $type) {
                     $errorOutput->write($buffer);
                 } else {
@@ -89,12 +91,17 @@ class ScreenRunCommand extends Command implements SignalableCommandInterface
 
             $errorOutput->writeln($exception->getMessage());
         } finally {
-            $this->eventDispatcher->dispatch(new ScreenStoppedEvent($this->screen, $this->process, $this->process->getExitCode()));
+            $exitCode = $this->process->getExitCode() ?: Command::FAILURE;
+
+            $this->eventDispatcher->dispatch(new ScreenStoppedEvent($this->screen, $this->process, $exitCode));
         }
 
-        return $this->process->getExitCode(); // pass exit code
+        return $exitCode;
     }
 
+    /**
+     * @return list<string>
+     */
     private function resolveCommand(ScreenInterface $screen): array
     {
         $command = $screen->getCommand();
@@ -124,6 +131,9 @@ class ScreenRunCommand extends Command implements SignalableCommandInterface
         throw new \RuntimeException('PHP binary not found.');
     }
 
+    /**
+     * @return array<int>
+     */
     public function getSubscribedSignals(): array
     {
         return [
@@ -142,7 +152,7 @@ class ScreenRunCommand extends Command implements SignalableCommandInterface
         $this->eventDispatcher->dispatch(new ScreenSignalReceivedEvent($this->screen, $this->process, $signal));
 
         if ($this->process?->isRunning()) {
-            $this->process?->signal($signal);
+            $this->process->signal($signal);
         }
 
         return false;

@@ -17,6 +17,7 @@ use SoureCode\Bundle\Screen\Manager\ScreenManager;
 use SoureCode\Bundle\Screen\Provider\ChainScreenProvider;
 use SoureCode\Bundle\Screen\Provider\ConfigScreenProvider;
 use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -33,48 +34,50 @@ class SoureCodeScreenBundle extends AbstractBundle
 
     public function configure(DefinitionConfigurator $definition): void
     {
+        /**
+         * @var ArrayNodeDefinition $rootNode
+         */
+        $rootNode = $definition->rootNode();
+
         // @formatter:off
-        $definition->rootNode()
-            ->fixXmlConfig('screen')
-            ->children()
-                ->scalarNode('class')
-                    ->defaultValue(Screen::class)
-                    ->validate()
-                        ->ifTrue(fn ($v) => !is_a($v, ScreenInterface::class, true))
-                        ->thenInvalid('The class must be an instance of "%s".')
-                    ->end()
-                ->end()
-                ->arrayNode('screens')
-                    ->beforeNormalization()->castToArray()->end()
-                    ->useAttributeAsKey('name')
-                    ->arrayPrototype()
-                        ->children()
-                            ->arrayNode('command')
-                                ->beforeNormalization()->castToArray()->end()
-                                ->scalarPrototype()->end()
-                                ->isRequired()
-                                ->validate()
-                                    ->ifTrue(fn ($v) => !\is_array($v) || \count($v) <= 0)
-                                    ->thenInvalid('The command must be an array with at least one element.')
-                                ->end()
-                            ->end()
-                            ->scalarNode('restart')
-                                ->setDeprecated('sourecode/screen-bundle', 'dev', 'The "restart" option is deprecated and will be removed in 1.0. Use external tools to just call start every several minutes.')
-                                ->defaultValue(false)
-                                ->info('If the screen should be restarted when it exits.')
-                                ->validate()
-                                    ->ifTrue(fn ($v) => !\is_bool($v))
-                                    ->thenInvalid('The restart option must be a boolean.')
-                                ->end()
+        $screenConfig = $rootNode->fixXmlConfig('screen')->children();
+
+        $screenConfig
+            ->scalarNode('class')
+                ->defaultValue(Screen::class)
+                ->validate()
+                    ->ifTrue(fn (string $v) => !is_a($v, ScreenInterface::class, true))
+                    ->thenInvalid('The class must be an instance of "%s".');
+
+        $screenConfig
+            ->arrayNode('screens')
+                ->beforeNormalization()->castToArray()->end()
+                ->useAttributeAsKey('name')
+                ->arrayPrototype()
+                    ->children()
+                        ->arrayNode('command')
+                            ->beforeNormalization()->castToArray()->end()
+                            ->scalarPrototype()->end()
+                            ->isRequired()
+                            ->validate()
+                                ->ifTrue(fn ($v) => !\is_array($v) || \count($v) <= 0)
+                                ->thenInvalid('The command must be an array with at least one element.')
                             ->end()
                         ->end()
-                    ->end()
-                ->end()
-            ->end()
+                        ->scalarNode('restart')
+                            ->setDeprecated('sourecode/screen-bundle', 'dev', 'The "restart" option is deprecated and will be removed in 1.0. Use external tools to just call start every several minutes.')
+                            ->defaultValue(false)
+                            ->info('If the screen should be restarted when it exits.')
+                            ->validate()
+                                ->ifTrue(fn ($v) => !\is_bool($v))
+                                ->thenInvalid('The restart option must be a boolean.')
         ;
         // @formatter:on
     }
 
+    /**
+     * @param array{class: class-string<ScreenInterface>, screens: array<string, array{command: array<string>}>} $config
+     */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $builder->registerForAutoconfiguration(ScreenProviderInterface::class)
@@ -199,7 +202,13 @@ class SoureCodeScreenBundle extends AbstractBundle
             throw new \RuntimeException('GNU Screen is not installed. Install it with `apt install screen`.');
         }
 
-        if (!preg_match('/^Screen version \d+\.\d+\.\d+ \(GNU\)/', shell_exec('screen -v'))) {
+        $result = shell_exec('screen -v');
+
+        if (!$result) {
+            throw new \RuntimeException('The screen command is not available. Make sure it is installed and in your PATH.');
+        }
+
+        if (!preg_match('/^Screen version \d+\.\d+\.\d+ \(GNU\)/', $result)) {
             throw new \RuntimeException('The screen command is not the GNU Screen.');
         }
 

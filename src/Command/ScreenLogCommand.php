@@ -33,6 +33,10 @@ class ScreenLogCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+
+        /**
+         * @var list<string> $names
+         */
         $names = $input->getArgument('names');
 
         if (!empty($names)) {

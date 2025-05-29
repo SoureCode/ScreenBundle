@@ -5,11 +5,11 @@ namespace SoureCode\Bundle\Screen\Entity;
 class Screen implements ScreenInterface
 {
     public function __construct(
-        protected ?string $name = null,
+        protected string $name,
         /**
          * @var list<string>
          */
-        protected ?array $command = null,
+        protected array $command,
     ) {
     }
 
@@ -18,6 +18,9 @@ class Screen implements ScreenInterface
         return $this->name;
     }
 
+    /**
+     * @return list<string>
+     */
     public function getCommand(): array
     {
         return $this->command;
@@ -28,6 +31,9 @@ class Screen implements ScreenInterface
         $this->name = $name;
     }
 
+    /**
+     * @param list<string> $command
+     */
     public function setCommand(array $command): void
     {
         $this->command = $command;

@@ -33,6 +33,10 @@ class ScreenAttachCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+
+        /**
+         * @var string $name
+         */
         $name = $input->getArgument('name');
 
         if (!$name) {

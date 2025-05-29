@@ -25,6 +25,8 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/orm": "^3.3",
         "nyholm/symfony-bundle-test": "^3.0",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^9.5",
         "symfony/monolog-bundle": "^3.10",
         "symfony/phpunit-bridge": "^7.1",
@@ -42,6 +44,7 @@
     },
     "config": {
         "allow-plugins": {
+            "phpstan/extension-installer": true,
             "symfony/runtime": true
         }
     }

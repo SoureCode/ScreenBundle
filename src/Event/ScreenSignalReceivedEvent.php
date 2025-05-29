@@ -9,18 +9,18 @@ use Symfony\Contracts\EventDispatcher\Event;
 final class ScreenSignalReceivedEvent extends Event
 {
     public function __construct(
-        private readonly ScreenInterface $screen,
-        private readonly Process $process,
+        private readonly ?ScreenInterface $screen,
+        private readonly ?Process $process,
         private readonly int $signal,
     ) {
     }
 
-    public function getScreen(): ScreenInterface
+    public function getScreen(): ?ScreenInterface
     {
         return $this->screen;
     }
 
-    public function getProcess(): Process
+    public function getProcess(): ?Process
     {
         return $this->process;
     }

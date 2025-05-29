@@ -244,7 +244,7 @@ readonly class ScreenManager
             return null;
         }
 
-        return file_get_contents($logFile);
+        return file_get_contents($logFile) ?: null;
     }
 
     public function attach(ScreenInterface|string $nameOrScreen): void

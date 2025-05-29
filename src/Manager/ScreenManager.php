@@ -21,9 +21,9 @@ readonly class ScreenManager
     ) {
     }
 
-    public function generateScreenName(ScreenInterface $screen): string
+    private function generateScreenName(ScreenInterface $screen): string
     {
-        return hash('sha256', $this->getBaseDirectory().$screen->getName().implode('', $screen->getCommand()));
+        return hash('sha256', \sprintf('%s%s%s', $this->getBaseDirectory(), $screen->getName(), implode('', $screen->getCommand())));
     }
 
     private function getLogDirectory(): string

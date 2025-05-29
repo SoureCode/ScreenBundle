@@ -4,6 +4,7 @@ namespace SoureCode\Bundle\Screen\Tests;
 
 use Nyholm\BundleTest\TestKernel;
 use SoureCode\Bundle\Screen\Factory\ScreenFactoryInterface;
+use SoureCode\Bundle\Screen\Manager\ScreenManager;
 use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
 use SoureCode\Bundle\Screen\SoureCodeScreenBundle;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -39,8 +40,8 @@ class BundleInitializationTest extends KernelTestCase
 
         $this->assertTrue($container->has(ScreenFactoryInterface::class));
 
-        $provider = self::getContainer()->get('soure_code.screen.provider.chain');
-
-        $this->assertInstanceOf(ScreenProviderInterface::class, $provider);
+        $this->assertInstanceOf(ScreenFactoryInterface::class, self::getContainer()->get('soure_code.screen.factory'));
+        $this->assertInstanceOf(ScreenProviderInterface::class, self::getContainer()->get('soure_code.screen.provider.chain'));
+        $this->assertInstanceOf(ScreenManager::class, self::getContainer()->get(ScreenManager::class));
     }
 }

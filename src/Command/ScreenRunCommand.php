@@ -2,11 +2,11 @@
 
 namespace SoureCode\Bundle\Screen\Command;
 
-use SoureCode\Bundle\Screen\Entity\ScreenInterface;
 use SoureCode\Bundle\Screen\Event\ScreenFailedEvent;
 use SoureCode\Bundle\Screen\Event\ScreenSignalReceivedEvent;
 use SoureCode\Bundle\Screen\Event\ScreenStartedEvent;
 use SoureCode\Bundle\Screen\Event\ScreenStoppedEvent;
+use SoureCode\Bundle\Screen\Model\ScreenInterface;
 use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

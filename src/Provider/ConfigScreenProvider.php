@@ -2,8 +2,8 @@
 
 namespace SoureCode\Bundle\Screen\Provider;
 
-use SoureCode\Bundle\Screen\Entity\ScreenInterface;
 use SoureCode\Bundle\Screen\Factory\ScreenFactoryInterface;
+use SoureCode\Bundle\Screen\Model\ScreenInterface;
 
 class ConfigScreenProvider implements ScreenProviderInterface
 {

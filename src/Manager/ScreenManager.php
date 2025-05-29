@@ -3,7 +3,7 @@
 namespace SoureCode\Bundle\Screen\Manager;
 
 use Psr\Log\LoggerInterface;
-use SoureCode\Bundle\Screen\Entity\ScreenInterface;
+use SoureCode\Bundle\Screen\Model\ScreenInterface;
 use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;

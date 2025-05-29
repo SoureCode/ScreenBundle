@@ -2,7 +2,7 @@
 
 namespace SoureCode\Bundle\Screen\Provider;
 
-use SoureCode\Bundle\Screen\Entity\ScreenInterface;
+use SoureCode\Bundle\Screen\Model\ScreenInterface;
 
 interface ScreenProviderInterface
 {

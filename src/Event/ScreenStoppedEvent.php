@@ -2,7 +2,7 @@
 
 namespace SoureCode\Bundle\Screen\Event;
 
-use SoureCode\Bundle\Screen\Entity\ScreenInterface;
+use SoureCode\Bundle\Screen\Model\ScreenInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Contracts\EventDispatcher\Event;
 

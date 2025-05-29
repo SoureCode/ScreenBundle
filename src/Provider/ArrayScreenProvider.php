@@ -5,7 +5,7 @@ namespace SoureCode\Bundle\Screen\Provider;
 use SoureCode\Bundle\Screen\Factory\ScreenFactoryInterface;
 use SoureCode\Bundle\Screen\Model\ScreenInterface;
 
-class ConfigScreenProvider implements ScreenProviderInterface
+class ArrayScreenProvider implements ScreenProviderInterface
 {
     /**
      * @var array<string, ScreenInterface>
@@ -17,17 +17,17 @@ class ConfigScreenProvider implements ScreenProviderInterface
         /**
          * @var array<string, array{command: list<string>}>
          */
-        private readonly array $screenConfigs,
+        private readonly array $screenDefinitions,
     ) {
     }
 
     public function all(): array
     {
-        $keys = array_keys($this->screenConfigs);
+        $keys = array_keys($this->screenDefinitions);
 
         foreach ($keys as $name) {
             if (!isset($this->screens[$name])) {
-                $this->screens[$name] = $this->screenFactory->create($name, $this->screenConfigs[$name]);
+                $this->screens[$name] = $this->screenFactory->create($name, $this->screenDefinitions[$name]);
             }
         }
 
@@ -41,7 +41,7 @@ class ConfigScreenProvider implements ScreenProviderInterface
         }
 
         if (!isset($this->screens[$name])) {
-            $this->screens[$name] = $this->screenFactory->create($name, $this->screenConfigs[$name]);
+            $this->screens[$name] = $this->screenFactory->create($name, $this->screenDefinitions[$name]);
         }
 
         return $this->screens[$name];
@@ -49,6 +49,6 @@ class ConfigScreenProvider implements ScreenProviderInterface
 
     public function has(string $name): bool
     {
-        return isset($this->screenConfigs[$name]);
+        return isset($this->screenDefinitions[$name]);
     }
 }

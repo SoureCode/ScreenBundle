@@ -2,7 +2,7 @@
 
 namespace SoureCode\Bundle\Screen\Tests\Provider;
 
-use SoureCode\Bundle\Screen\Provider\ConfigScreenProvider;
+use SoureCode\Bundle\Screen\Provider\ArrayScreenProvider;
 use PHPUnit\Framework\TestCase;
 use SoureCode\Bundle\Screen\Factory\ScreenFactoryInterface;
 use SoureCode\Bundle\Screen\Model\ScreenInterface;
@@ -18,10 +18,10 @@ class ConfigScreenProviderTest extends TestCase
         ];
 
         // Act
-        $actual = new ConfigScreenProvider($screenFactory, $screenConfigs);
+        $actual = new ArrayScreenProvider($screenFactory, $screenConfigs);
 
         // Assert
-        $this->assertInstanceOf(ConfigScreenProvider::class, $actual);
+        $this->assertInstanceOf(ArrayScreenProvider::class, $actual);
     }
 
     public function testHas(): void
@@ -31,7 +31,7 @@ class ConfigScreenProviderTest extends TestCase
         $screenConfigs = [
             'screen1' => ['command' => ['cmd1']],
         ];
-        $provider = new ConfigScreenProvider($screenFactory, $screenConfigs);
+        $provider = new ArrayScreenProvider($screenFactory, $screenConfigs);
 
         // Act
         $actualTrue = $provider->has('screen1');
@@ -55,7 +55,7 @@ class ConfigScreenProviderTest extends TestCase
             ->with('screen1', $screenConfigs['screen1'])
             ->willReturn($expectedScreen);
 
-        $provider = new ConfigScreenProvider($screenFactory, $screenConfigs);
+        $provider = new ArrayScreenProvider($screenFactory, $screenConfigs);
 
         // Act
         $actual = $provider->get('screen1');
@@ -69,7 +69,7 @@ class ConfigScreenProviderTest extends TestCase
         // Arrange
         $screenFactory = $this->createMock(ScreenFactoryInterface::class);
         $screenConfigs = [];
-        $provider = new ConfigScreenProvider($screenFactory, $screenConfigs);
+        $provider = new ArrayScreenProvider($screenFactory, $screenConfigs);
 
         // Assert
         $this->expectException(\InvalidArgumentException::class);
@@ -97,7 +97,7 @@ class ConfigScreenProviderTest extends TestCase
             )
             ->willReturnOnConsecutiveCalls($expectedScreen1, $expectedScreen2);
 
-        $provider = new ConfigScreenProvider($screenFactory, $screenConfigs);
+        $provider = new ArrayScreenProvider($screenFactory, $screenConfigs);
 
         // Act
         $actual = $provider->all();

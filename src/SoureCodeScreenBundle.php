@@ -14,8 +14,8 @@ use SoureCode\Bundle\Screen\Factory\ScreenFactoryInterface;
 use SoureCode\Bundle\Screen\Manager\ScreenManager;
 use SoureCode\Bundle\Screen\Model\Screen;
 use SoureCode\Bundle\Screen\Model\ScreenInterface;
+use SoureCode\Bundle\Screen\Provider\ArrayScreenProvider;
 use SoureCode\Bundle\Screen\Provider\ChainScreenProvider;
-use SoureCode\Bundle\Screen\Provider\ConfigScreenProvider;
 use SoureCode\Bundle\Screen\Provider\ScreenProviderInterface;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
@@ -93,7 +93,7 @@ class SoureCodeScreenBundle extends AbstractBundle
         $services->alias(ScreenFactoryInterface::class, self::$PREFIX.'factory')
             ->public();
 
-        $services->set(self::$PREFIX.'provider.config', ConfigScreenProvider::class)
+        $services->set(self::$PREFIX.'provider.config', ArrayScreenProvider::class)
             ->args([
                 service(self::$PREFIX.'factory'),
                 $config['screens'],

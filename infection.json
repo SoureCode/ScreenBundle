@@ -4,7 +4,7 @@
       "src"
     ],
     "excludes": [
-      "SoureCodeDoctrineExtensionBundle.php",
+      "SoureCodeScreenBundle.php",
       "/Interface\\.php/"
     ]
   },

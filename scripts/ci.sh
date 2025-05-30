@@ -19,9 +19,6 @@ kyx composer-unused
 FORCED_PHP_VERSION=8.3 kyx php-cs-fixer fix --dry-run --show-progress=dots --using-cache=no --verbose
 kyx phpstan analyse --memory-limit=512M --ansi --no-progress --error-format=table
 vendor/bin/phpunit
-kyx infection "--threads=$(nproc)"
-
-# clear logs
-rm -r "${PROJECT_DIRECTORY}/tests/app/var/log" || true
+kyx infection "-j$(nproc)"
 
 popd >/dev/null

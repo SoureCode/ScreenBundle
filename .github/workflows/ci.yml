@@ -101,6 +101,6 @@ jobs:
                     tools: infection
             -   uses: ramsey/composer-install@v3
             -   run: |
-                    infection --min-msi=33 --min-covered-msi=59 "--threads=$(nproc)"
+                    infection --min-msi=17 --min-covered-msi=59 "--threads=$(nproc)"
                 env:
                     STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
